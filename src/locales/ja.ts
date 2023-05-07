@@ -24,7 +24,7 @@ export default {
   },
   register: {
     title: "アカウントを作成する",
-    username: "フルネーム",
+    username: "Codeforce ハンドル",
     email: "Eメール",
     password: "パスワード",
     button: "アカウントを作成する",

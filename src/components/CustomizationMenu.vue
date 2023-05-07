@@ -146,7 +146,7 @@ watch(currentColor, (newVal) => {
           ></v-switch>
         </div>
         <hr class="mb-6" />
-        <div>
+        <!-- <div>
           <v-btn color="" class="gradient info" block size="large"
             >Contact Me</v-btn
           >
@@ -157,7 +157,7 @@ watch(currentColor, (newVal) => {
         </div>
         <div>
           <img src="@/assets/wechat.jpg" alt="" />
-        </div>
+        </div> -->
       </div>
     </v-navigation-drawer>
   </div>

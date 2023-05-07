@@ -24,7 +24,7 @@ export default {
   },
   register: {
     title: "Create Account",
-    username: "Username",
+    username: "CodeForces Handle",
     email: "Email",
     password: "Password",
     button: "Create Account",

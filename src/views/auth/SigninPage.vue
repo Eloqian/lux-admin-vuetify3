@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
 import { useAuthStore } from "@/stores/authStore";
+import router from "~/src/router";
 
 const authStore = useAuthStore();
 const isLoading = ref(false);
 const isSignInDisabled = ref(false);
 
 const refLoginForm = ref();
-const email = ref("vuetify3-visitor@gmail.com");
-const password = ref("sfm12345");
+const email = ref("1327309508@qq.com");
+const password = ref("D_qiancl");
 const isFormValid = ref(true);
 
 // show password field
@@ -19,7 +20,13 @@ const handleLogin = async () => {
   if (valid) {
     isLoading.value = true;
     isSignInDisabled.value = true;
-    authStore.loginWithEmailAndPassword(email.value, password.value);
+    authStore.loginWithEmailAndPassword(email.value, password.value).then(() => {
+      router.push("/")
+    })
+    .finally(() => {
+      isLoading.value = false;
+      isSignInDisabled.value = false;
+    })
   } else {
     console.log("no");
   }

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";
 import { useAuthStore } from "@/stores/authStore";
-
+import router from "~/src/router";
+import { useSnackbarStore } from "@/stores/snackbarStore"
 const authStore = useAuthStore();
 const username = ref("");
 
@@ -23,7 +24,27 @@ const handleRegister = async () => {
   if (valid) {
     isLoading.value = true;
     isSignInDisabled.value = true;
-    authStore.registerWithEmailAndPassword(email.value, password.value);
+    try {
+      await authStore.registerWithEmailAndPassword(
+        username.value,
+        email.value,
+        password.value
+      );
+    } catch (error) {
+      const snackbarStore = useSnackbarStore();
+      snackbarStore.showErrorMessage(error.message);
+      errorProvider.value = true;
+      errorProviderMessages.value = error.message;
+      isLoading.value = false;
+      isSignInDisabled.value = false;
+      return;
+    }
+    const snackbarStore = useSnackbarStore();
+    snackbarStore.showSuccessMessage("Register Success")
+    setTimeout(() => {
+      window.location.reload();
+    }, 1500);
+    router.push("/");
   } else {
     console.log("no");
   }
@@ -35,12 +56,12 @@ const emailRules = ref([
   (v: string) => /.+@.+\..+/.test(v) || "E-mail must be valid",
 ]);
 
-const usernameRules = ref([(v: string) => !!v || "UserNmae is required"]);
+const usernameRules = ref([(v: string) => !!v || "Codeforces Handle is required"]);
 
 const passwordRules = ref([
   (v: string) => !!v || "Password is required",
   (v: string) =>
-    (v && v.length <= 10) || "Password must be less than 10 characters",
+    (v && v.length <= 18) || "Password must be less than 18 characters",
 ]);
 
 // error provider
@@ -71,6 +92,7 @@ const resetErrors = () => {
         lazy-validation
       >
         <v-text-field
+          ref="refUsername"
           v-model="username"
           required
           :error="error"

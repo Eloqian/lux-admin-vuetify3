@@ -1,14 +1,17 @@
 <!--
-* @Component: 
-* @Maintainer: J.K. Yang
-* @Description: 
+* @Component:
+* @Maintainer: Eloqian
+* @Description:
 -->
 
 <script setup lang="ts">
-import { useProfileStore } from "@/stores/profileStore";
-import { Icon } from "@iconify/vue";
+import { useProfileStore } from "@/stores/profileStore"
+import { Icon } from "@iconify/vue"
+import { useSnackbarStore } from "@/stores/snackbarStore"
+
 const profileStore = useProfileStore();
 const basic = reactive({
+  codeforces_id: "",
   username: "",
   realname: "",
   email: "",
@@ -17,6 +20,7 @@ const basic = reactive({
   role: "",
   disabled: false,
   about: "",
+  phone: "",
   lastSignIn: "2019-09-20T01:11:13Z",
 });
 
@@ -31,7 +35,7 @@ const notifications = reactive({
 });
 
 const passwords = reactive({
-  currentPassword: "123456",
+  currentPassword: "",
   newPassword: "",
   confirmPassword: "",
 });
@@ -40,16 +44,17 @@ const currentPasswordShow = ref(false);
 const newPasswordShow = ref(false);
 const confirmPasswordShow = ref(false);
 
-onMounted(() => {
-  const profile = profileStore.getProfile();
-  console.log(profile);
-
+onMounted(async () => {
+  const profile = profileStore;
+  await profile.getProfile();
+  basic.codeforces_id = profile.basic.codeforces_id;
   basic.username = profile.basic.username;
   basic.realname = profile.basic.realname;
   basic.email = profile.basic.email;
   basic.avatar = profile.basic.avatar;
   basic.location = profile.basic.location;
   basic.role = profile.basic.role;
+  basic.phone = profile.basic.phone;
   basic.disabled = profile.basic.disabled;
   basic.about = profile.basic.about;
   basic.lastSignIn = profile.basic.lastSignIn;
@@ -58,6 +63,42 @@ onMounted(() => {
   notifications.officialEmails = profile.notifications.officialEmails;
   notifications.followerUpdates = profile.notifications.followerUpdates;
 });
+
+const HandleUpdateBasicInfo = async () => {
+  await profileStore.updateBasicInfo(basic);
+  const snackbarStore = useSnackbarStore();
+  snackbarStore.showSuccessMessage("Update Success")
+};
+
+const HandleUpdatePassword = async () => {
+  if (passwords.newPassword !== passwords.confirmPassword) {
+    const snackbarStore = useSnackbarStore();
+    snackbarStore.showErrorMessage("Password not match")
+    return;
+  }
+  if (passwords.newPassword.length < 6) {
+    const snackbarStore = useSnackbarStore();
+    snackbarStore.showErrorMessage("Password must be at least 6 characters")
+    return;
+  }
+  if (passwords.currentPassword === passwords.newPassword) {
+    const snackbarStore = useSnackbarStore();
+    snackbarStore.showErrorMessage("New password cannot be the same as the old password")
+    return;
+  }
+  try {
+    await profileStore.updatePassword(passwords);
+  }catch (e) {
+    const snackbarStore = useSnackbarStore();
+    snackbarStore.showErrorMessage(e.message)
+    return;
+  }
+  const snackbarStore = useSnackbarStore();
+  snackbarStore.showSuccessMessage("Update Success")
+  setTimeout(() => {
+    window.location.reload();
+  }, 1500);
+};
 </script>
 
 Basic with Icons
@@ -73,7 +114,7 @@ Basic with Icons
 
             <div class="text-center mt-5">
               <h3 class="text-h6 font-weight-bold">
-                {{ basic.username }}
+                {{ basic.codeforces_id }}
                 <v-chip size="small" class="font-weight-bold" color="blue">
                   {{ basic.role }}
                 </v-chip>
@@ -96,7 +137,7 @@ Basic with Icons
 
           <div class="py-5 px-10">
             <v-icon color="grey"> mdi-phone-outline </v-icon>
-            <span class="ml-4">070-4444-4444</span>
+            <span class="ml-4">{{ basic.phone }}</span>
           </div>
         </v-card>
       </v-col>
@@ -112,9 +153,11 @@ Basic with Icons
           <v-card-text class="pa-7">
             <v-row>
               <v-col cols="12" sm="6">
-                <v-label class="font-weight-medium mb-2">Username</v-label>
+                <v-label class="font-weight-medium mb-2">CodeforcesID</v-label>
                 <v-text-field
-                  v-model="basic.username"
+                  class="bg-blue-grey-lighten-5"
+                  readonly
+                  v-model="basic.codeforces_id"
                   color="primary"
                   variant="outlined"
                   density="compact"
@@ -156,6 +199,7 @@ Basic with Icons
             <v-btn
               class="px-5"
               color="primary"
+              @click="HandleUpdateBasicInfo"
               elevation="1"
               variant="elevated"
             >
@@ -230,9 +274,7 @@ Basic with Icons
                   >Current Password</v-label
                 >
                 <v-text-field
-                  readonly
                   v-model="passwords.currentPassword"
-                  class="bg-blue-grey-lighten-5"
                   density="compact"
                   color="primary"
                   variant="outlined"
@@ -296,6 +338,7 @@ Basic with Icons
               class="px-5"
               color="primary"
               elevation="1"
+              @click="HandleUpdatePassword"
               variant="elevated"
             >
               Unpdate Password</v-btn

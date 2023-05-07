@@ -5,10 +5,10 @@
     >
       <div class="mt-3 mt-md-10 pa-2">
         <div class="text-primary text-h4 font-weight-bold">
-          Lux Vuetify3 Admin
+          EloRank
         </div>
         <div class="title my-2">
-          Welcome! Let's build amazing things together.
+          Welcome! Let's elo amazing things together.
         </div>
       </div>
     </v-sheet>

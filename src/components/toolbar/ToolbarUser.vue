@@ -1,7 +1,7 @@
 <!--
 * @Component: ToolbarNotifications
-* @Maintainer: J.K. Yang
-* @Description: 
+* @Maintainer: Eloqian
+* @Description:
 -->
 <script setup lang="ts">
 import StatusMenu from "./StatusMenu.vue";
@@ -69,9 +69,7 @@ const navs = [
       <v-btn class="mx-2" icon v-bind="props">
         <v-badge content="2" color="success" dot bordered>
           <v-avatar size="40">
-            <v-img
-              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwrAiMevuwrbU9o0Ck2paVf4ufHUDb2dU48MEDrAlrQw&s"
-            ></v-img>
+            <v-img :src="authStore.avatar"> </v-img>
           </v-avatar>
         </v-badge>
       </v-btn>
@@ -84,19 +82,17 @@ const navs = [
         <v-list-item to="/profile">
           <template v-slot:prepend>
             <v-avatar size="40">
-              <v-img
-                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTwrAiMevuwrbU9o0Ck2paVf4ufHUDb2dU48MEDrAlrQw&s"
-              ></v-img>
+              <v-img :src="authStore.avatar"> </v-img>
             </v-avatar>
           </template>
 
           <v-list-item-title class="font-weight-bold text-primary">
-            YANG J.K.
+            <!-- YANG J.K. -->
+            {{ authStore.username }}
             <StatusMenu />
           </v-list-item-title>
           <v-list-item-subtitle>
-            <!-- {{ $store.state.user.email  }} -->
-            yjkbako@gmail.com
+            {{ authStore.mail }}
           </v-list-item-subtitle>
         </v-list-item>
       </v-list>
