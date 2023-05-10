@@ -7,9 +7,10 @@
 import { useSnackbarStore } from "@/stores/snackbarStore";
 import { useChatStore } from "@/views/app/chat/chatStore";
 import AnimationAi from "@/components/animations/AnimationBot2.vue";
-import { read } from "@/utils/aiUtils";
+import { read, countAndCompleteCodeBlocks } from "@/utils/aiUtils";
 import MdEditor from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
+import { scrollToBottom } from "@/utils/common";
 const snackbarStore = useSnackbarStore();
 const chatStore = useChatStore();
 
@@ -18,11 +19,11 @@ interface Message {
   role: "user" | "assistant";
 }
 
-// Message List
-const messages = ref<Message[]>([]);
-
 // User Input Message
 const userMessage = ref("");
+
+// Message List
+const messages = ref<Message[]>([]);
 
 // Send Messsage
 const sendMessage = async () => {
@@ -93,33 +94,35 @@ const createCompletion = async () => {
   }
 };
 
-// Scroll to the bottom of the message container
-const scrollToBottom = () => {
-  const container = document.querySelector(".message-container");
-
-  container?.scrollTo({
-    top: container?.scrollHeight,
-  });
-};
-
 watch(
   () => messages.value,
   (val) => {
     if (val) {
-      scrollToBottom();
+      scrollToBottom(document.querySelector(".message-container"));
     }
   },
   {
     deep: true,
   }
 );
+
+const displayMessages = computed(() => {
+  const messagesCopy = messages.value.slice(); // 创建原始数组的副本
+  const lastMessage = messagesCopy[messagesCopy.length - 1];
+  const updatedLastMessage = {
+    ...lastMessage,
+    content: countAndCompleteCodeBlocks(lastMessage.content),
+  };
+  messagesCopy[messagesCopy.length - 1] = updatedLastMessage;
+  return messagesCopy;
+});
 </script>
 
 <template>
   <div class="chat-bot">
     <div class="messsage-area">
       <perfect-scrollbar v-if="messages.length > 0" class="message-container">
-        <template v-for="message in messages">
+        <template v-for="message in displayMessages">
           <div v-if="message.role === 'user'">
             <div class="pa-5 user-message">
               <div class="message align-center">
