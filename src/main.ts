@@ -22,11 +22,14 @@ import i18n from "./plugins/i18n";
 import "vue3-lottie/dist/style.css";
 import Vue3Lottie from "vue3-lottie";
 import { ElMessage } from 'element-plus'
+import Antd from 'ant-design-vue'
+import 'ant-design-vue/dist/antd.css'
 
 const pinia = createPinia();
 pinia.use(piniaPersist);
 const app = createApp(App);
 
+app.use(Antd)
 app.use(router);
 app.use(PerfectScrollbar);
 app.use(MasonryWall);
