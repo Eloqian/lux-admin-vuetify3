@@ -5,25 +5,45 @@
 -->
 <script setup lang="ts">
 import { useSnackbarStore } from "@/stores/snackbarStore";
-import { useChatStore } from "@/views/app/chat/chatStore";
 import AnimationAi from "@/components/animations/AnimationBot2.vue";
 import { read, countAndCompleteCodeBlocks } from "@/utils/aiUtils";
 import MdEditor from "md-editor-v3";
 import "md-editor-v3/lib/style.css";
 import { scrollToBottom } from "@/utils/common";
+import { useChatGPTStore } from "@/stores/chatGPTStore";
 const snackbarStore = useSnackbarStore();
-const chatStore = useChatStore();
+const chatGPTStore = useChatGPTStore();
 
 interface Message {
   content: string;
-  role: "user" | "assistant";
+  role: "user" | "assistant" | "system";
 }
 
 // User Input Message
 const userMessage = ref("");
 
+// Prompt Message
+const promptMessage = computed(() => {
+  return [
+    {
+      content: chatGPTStore.propmpt,
+      role: "system",
+    },
+  ];
+});
+
 // Message List
 const messages = ref<Message[]>([]);
+
+const requestMessages = computed(() => {
+  if (messages.value.length <= 10) {
+    return [...promptMessage.value, ...messages.value];
+  } else {
+    // 截取最新的10条信息
+    const slicedMessages = messages.value.slice(-10);
+    return [...promptMessage.value, ...slicedMessages];
+  }
+});
 
 // Send Messsage
 const sendMessage = async () => {
@@ -44,7 +64,7 @@ const sendMessage = async () => {
 
 const createCompletion = async () => {
   // Check if the API key is set
-  if (!chatStore.getApiKey) {
+  if (!chatGPTStore.getApiKey) {
     snackbarStore.showErrorMessage("请先输入API KEY");
     return;
   }
@@ -56,11 +76,11 @@ const createCompletion = async () => {
       {
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${chatStore.getApiKey}`,
+          Authorization: `Bearer ${chatGPTStore.getApiKey}`,
         },
         method: "POST",
         body: JSON.stringify({
-          messages: messages.value,
+          messages: requestMessages.value,
           model: "gpt-3.5-turbo",
           stream: true,
         }),
