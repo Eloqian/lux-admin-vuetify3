@@ -23,7 +23,9 @@ import "vue3-lottie/dist/style.css";
 import Vue3Lottie from "vue3-lottie";
 import { ElMessage } from 'element-plus'
 import Antd from 'ant-design-vue'
-import 'ant-design-vue/dist/antd.css'
+// import 'ant-design-vue/dist/antd.js'
+// import 'ant-design-vue/dist/antd.main.js'
+import 'ant-design-vue/dist/reset.css'
 
 const pinia = createPinia();
 pinia.use(piniaPersist);

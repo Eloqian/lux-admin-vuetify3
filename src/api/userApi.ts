@@ -60,6 +60,14 @@ export function getUserList(query) {
   })
 }
 
+export function getUserPointList(data) {
+  return request({
+    url: '/system/points/get_points/',
+    method: 'post',
+    data
+  })
+}
+
 export function getUser(id) {
   return request({
     url: `/system/user/${id}/`,

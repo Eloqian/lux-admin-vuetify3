@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { faker } from "@faker-js/faker";
 import moment from "moment";
+
+const loading = ref(true);
 const generateMessage = () => {
   return {
     // 生成4位id
@@ -14,10 +16,19 @@ const generateMessage = () => {
   };
 };
 
+// const list = () => {
+//   let list = [] as any[];
+//   list = Array.from({ length: 20 }, (value, index) => ({
+//     id: "#" + index + "",
+//     ...generateMessage(),
+//   }));
+//   return list;
+// };
+
 const list = () => {
   let list = [] as any[];
   list = Array.from({ length: 20 }, (value, index) => ({
-    id: "#1000" + index + "",
+    id: "#" + index + "",
     ...generateMessage(),
   }));
   return list;
@@ -109,7 +120,7 @@ const formTitle = computed(() => {
             <v-text-field
               density="compact"
               v-model="search"
-              label="Search Contacts"
+              label="Search"
               hide-details
               variant="outlined"
               color="primary"
@@ -117,12 +128,12 @@ const formTitle = computed(() => {
           </v-col>
           <v-col cols="12" lg="8" md="6" class="text-right">
             <v-dialog v-model="dialog" max-width="700">
-              <template v-slot:activator="{ props }">
+              <!-- <template v-slot:activator="{ props }">
                 <v-btn color="primary" v-bind="props" flat class="ml-auto">
                   <v-icon class="mr-2">mdi-account-multiple-plus</v-icon>Add
                   Contact
                 </v-btn>
-              </template>
+              </template> -->
               <v-card>
                 <v-card-title class="pa-4 bg-secondary">
                   <span class="title text-white">{{ formTitle }}</span>
@@ -230,10 +241,10 @@ const formTitle = computed(() => {
     </v-card>
 
     <v-card class="mt-2">
-      <v-table class="mt-5">
+      <v-table :loading = "loading" class="mt-5">
         <thead>
           <tr>
-            <th class="text-subtitle-1 font-weight-semibold">Id</th>
+            <th class="text-subtitle-1 font-weight-semibold">Rank</th>
             <th class="text-subtitle-1 font-weight-semibold">UserInfo</th>
             <th class="text-subtitle-1 font-weight-semibold">Phone</th>
             <th class="text-subtitle-1 font-weight-semibold">Joining Date</th>
