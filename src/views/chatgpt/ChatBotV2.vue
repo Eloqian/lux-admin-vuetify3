@@ -65,15 +65,16 @@ const sendMessage = async () => {
 
 const createCompletion = async () => {
   // Check if the API key is set
-  if (!chatGPTStore.getApiKey) {
-    snackbarStore.showErrorMessage("请先输入API KEY");
-    return;
-  }
+  // if (!chatGPTStore.getApiKey) {
+  //   snackbarStore.showErrorMessage("请先输入API KEY");
+  //   return;
+  // }
 
   try {
     // Create a completion (axios is not used here because it does not support streaming)
     const completion = await fetch(
-      "https://api.openai.com/v1/chat/completions",
+      "https://baixiang.yunrobot.cn/v1/chat/completions",
+      // "https://api.openai.com/v1/chat/completions",
       {
         headers: {
           "Content-Type": "application/json",
@@ -137,6 +138,18 @@ const displayMessages = computed(() => {
   messagesCopy[messagesCopy.length - 1] = updatedLastMessage;
   return messagesCopy;
 });
+
+const handleKeydown = (e) => {
+  if (e.key === "Enter" && (e.altKey || e.shiftKey)) {
+    // 当同时按下 alt或者shift 和 enter 时，插入一个换行符
+    e.preventDefault();
+    userMessage.value += "\n";
+  } else if (e.key === "Enter") {
+    // 当只按下 enter 时，发送消息
+    e.preventDefault();
+    sendMessage();
+  }
+};
 </script>
 
 <template>
@@ -146,14 +159,14 @@ const displayMessages = computed(() => {
         <template v-for="message in displayMessages">
           <div v-if="message.role === 'user'">
             <div class="pa-5 user-message">
-              <div class="message align-center">
+              <div class="message align-center text-pre-wrap">
                 <v-avatar class="mr-4 mr-lg-8">
                   <img
                     src="@/assets/images/avatars/avatar_user.jpg"
                     alt="alt"
                   />
                 </v-avatar>
-                <b> {{ message.content }}</b>
+                <span> {{ message.content }}</span>
               </div>
             </div>
           </div>
@@ -197,14 +210,19 @@ const displayMessages = computed(() => {
             text="ChatGPT Config"
           ></v-tooltip>
         </v-btn>
-        <v-text-field
+        <v-textarea
           class="ml-2"
           color="primary"
+          type="text"
+          clearable
+          variant="solo"
           ref="input"
           v-model="userMessage"
           placeholder="SendMessage"
           hide-details
-          @keyup.enter="sendMessage"
+          @keydown="handleKeydown"
+          rows="1"
+          no-resize
         >
           <!-- <template #prepend-inner>
             <v-icon>mdi-microphone</v-icon>
@@ -213,7 +231,7 @@ const displayMessages = computed(() => {
           <template #append-inner>
             <v-icon @click="sendMessage">mdi-send</v-icon>
           </template>
-        </v-text-field>
+        </v-textarea>
       </v-sheet>
       <ApiKeyDialog />
     </div>
