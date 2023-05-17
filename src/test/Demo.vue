@@ -1,13 +1,13 @@
 <!--
-* @Component: 
-* @Maintainer: J.K. Yang
-* @Description: 
+* @Component:
+* @Maintainer: Eloqian
+* @Description:
 -->
 <script setup lang="ts">
 defineProps({
   name: {
     type: String,
-    default: "J.K. Yang",
+    default: "Eloqian",
   },
 });
 </script>

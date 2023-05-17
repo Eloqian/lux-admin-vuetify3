@@ -1,7 +1,7 @@
 <!--
-* @Component: 
-* @Maintainer: J.K. Yang
-* @Description: 
+* @Component:
+* @Maintainer: Eloqian
+* @Description:
 -->
 <script setup lang="ts">
 import Hero1 from "./components/Hero1.vue";

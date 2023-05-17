@@ -1,6 +1,6 @@
 <!--
-* @Component: 
-* @Maintainer: J.K. Yang
+* @Component:
+* @Maintainer: Eloqian
 * @Description: PhotoPreviewCard
 -->
 <script setup lang="ts">

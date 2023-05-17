@@ -42,6 +42,7 @@ export default {
     pages: "Pages",
     others: "Others",
     email: "Email",
+    teamrating: "Team Rating",
     chat: "Chat",
     todo: "To Do",
     nitori: "Nitori",

@@ -1,6 +1,6 @@
 <!--
-* @Component: 
-* @Maintainer: J.K. Yang
+* @Component:
+* @Maintainer: Eloqian
 * @Description: Imitate Nitori App
 -->
 <script setup lang="ts"></script>

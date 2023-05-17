@@ -110,4 +110,18 @@ export default [
       ),
     children: [...unsplashRoutes],
   },
+  {
+    path: "/apps/teamrating",
+    meta: {
+      requiresAuth: true,
+      layout: "ui",
+      category: "APP",
+      title: "Team Rating",
+    },
+    component: () =>
+      import(
+        /* webpackChunkName: "app-teamrating" */ "@/views/app/teamrating/TeamRatingApp.vue"
+      ),
+    children: [],
+  },
 ];

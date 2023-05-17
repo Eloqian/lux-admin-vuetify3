@@ -1,6 +1,6 @@
 <!--
 * @Component: ApexHeatMapCharts
-* @Maintainer: J.K. Yang
+* @Maintainer: Eloqian
 * @Description: ApexHeatMapCharts
 -->
 <script setup lang="ts">

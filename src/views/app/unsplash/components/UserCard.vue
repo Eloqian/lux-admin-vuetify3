@@ -1,7 +1,7 @@
 <!--
 * @Component: PhotoCard
-* @Maintainer: J.K. Yang
-* @Description: 
+* @Maintainer: Eloqian
+* @Description:
 -->
 <script setup lang="ts">
 import { useUnsplashStore } from "../unsplashStore";

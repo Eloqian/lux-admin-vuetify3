@@ -1,7 +1,7 @@
 <!--
 * @Component: User
-* @Maintainer: J.K. Yang
-* @Description: Page Of User 
+* @Maintainer: Eloqian
+* @Description: Page Of User
 -->
 <script setup lang="ts"></script>
 

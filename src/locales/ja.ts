@@ -42,6 +42,7 @@ export default {
     pages: "ページ",
     others: "その他",
     email: "Eメール",
+    teamrating: "チームレーティング",
     chat: "チャット",
     todo: "やること",
     nitori: "Nitori",

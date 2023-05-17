@@ -1,6 +1,6 @@
 <!--
 * @Component: EchartPie
-* @Maintainer: J.K. Yang
+* @Maintainer: Eloqian
 * @Description: Echart BarChart
 -->
 

@@ -1,7 +1,7 @@
 <!--
 * @Component: BackToTop
-* @Maintainer: J.K. Yang
-* @Description: 
+* @Maintainer: Eloqian
+* @Description:
 -->
 <script setup lang="ts">
 import { Icon } from "@iconify/vue";

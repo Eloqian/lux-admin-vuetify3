@@ -1,6 +1,6 @@
 <!--
 * @Component: EchartOthers
-* @Maintainer: J.K. Yang
+* @Maintainer: Eloqian
 * @Description: Echart 其他图表
 -->
 <script setup lang="ts">

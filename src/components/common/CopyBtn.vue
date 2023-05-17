@@ -1,6 +1,6 @@
 <!--
 * @Component: CopyLabel
-* @Maintainer: J.K. Yang
+* @Maintainer: Eloqian
 * @Description:
 -->
 <script setup lang="ts">

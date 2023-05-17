@@ -48,4 +48,10 @@ export default [
     text: "Email",
     link: "/apps/email",
   },
+  {
+    icon: "mdi-chart-bubble",
+    key: "menu.teamrating",
+    test: "Team Rating",
+    link: "/apps/teamrating",
+  },
 ];

@@ -1,6 +1,6 @@
 <!--
 * @Component: Apex Chart
-* @Maintainer: J.K. Yang
+* @Maintainer: Eloqian
 * @Description: ApexChart
 -->
 <script setup lang="ts">

@@ -42,6 +42,7 @@ export default {
     pages: "页面",
     others: "其他",
     email: "电子邮件",
+    teamrating: "模拟组队",
     chat: "聊天室",
     todo: "待办事项",
     nitori: "Nitori",
