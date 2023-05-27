@@ -8,8 +8,8 @@ const isLoading = ref(false);
 const isSignInDisabled = ref(false);
 
 const refLoginForm = ref();
-const email = ref("1327309508@qq.com");
-const password = ref("D_qiancl");
+const email = ref("");
+const password = ref("");
 const isFormValid = ref(true);
 
 // show password field
@@ -45,7 +45,7 @@ const emailRules = ref([
 const passwordRules = ref([
   (v: string) => !!v || "Password is required",
   (v: string) =>
-    (v && v.length <= 10) || "Password must be less than 10 characters",
+    (v && v.length <= 18) || "Password must be less than 18 characters",
 ]);
 
 // error provider
@@ -92,7 +92,7 @@ const signInWithFacebook = () => {
           name="email"
           outlined
           validateOn="blur"
-          placeholder="403474473@qq.com"
+          placeholder=""
           @keyup.enter="handleLogin"
           @change="resetErrors"
         ></v-text-field>
@@ -104,7 +104,7 @@ const signInWithFacebook = () => {
           :error="error"
           :error-messages="errorMessages"
           :label="$t('login.password')"
-          placeholder="sfm12345"
+          placeholder=""
           density="default"
           variant="underlined"
           color="primary"

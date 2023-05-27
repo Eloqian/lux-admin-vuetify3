@@ -6,9 +6,10 @@
 <script setup lang="ts">
 import { getUserList, getUserPointList } from "@/api/userApi";
 import CopyLabel from "@/components/common/CopyLabel.vue";
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs, { Dayjs } from "dayjs";
+import { message } from "ant-design-vue";
 import { LazyResult } from "postcss";
-import { ref } from 'vue';
+import { ref } from "vue";
 type RangeValue = [Dayjs, Dayjs];
 
 const loading = ref(true);
@@ -27,16 +28,18 @@ const getlastyear = () => {
 };
 
 const queryData = {
+  points_list: [2, 2, 3, 3, 4, 5, 5, 5, 5],
   handles: ["Elo"],
   date_from: "",
   date_to: "",
 };
 
 const headers = [
-  { title: "Rank", key: "rank" , width: '120px'},
   { title: "UserInfo", key: "codeforces_id" },
-  { title: "Rating", key: "rating" ,sortable: true},
-  { title: "Points", key: "points" ,sortable: true},
+  { title: "Rating", key: "rating", sortable: true },
+  { title: "Points", key: "points", sortable: true },
+  { title: "Phone", key: "phone" },
+  { title: "Email", key: "email" },
   { title: "Actions", key: "actions" },
 ];
 
@@ -48,13 +51,14 @@ let date_to = new Date().toISOString();
 console.log("date_from = ", date_from);
 console.log("date_to = ", date_to);
 
-const value = ref<[Dayjs, Dayjs]>([
-  dayjs(date_from),
-  dayjs(date_to),
-]);
+const value = ref<[Dayjs, Dayjs]>([dayjs(date_from), dayjs(date_to)]);
 
 const check = (a: any, b: any) => {
-  return JSON.stringify(a) === JSON.stringify(b) && queryData.date_from === date_from && queryData.date_to === date_to;
+  return (
+    JSON.stringify(a) === JSON.stringify(b) &&
+    queryData.date_from === date_from &&
+    queryData.date_to === date_to
+  );
 };
 
 const getPoints = async () => {
@@ -90,7 +94,9 @@ const getUsers = async () => {
       username: any;
       name: any;
       position: any;
+      phone: any;
       email: any;
+      rating: any;
     }) => {
       return {
         avatar: user.avatar,
@@ -100,6 +106,8 @@ const getUsers = async () => {
         location: user.position,
         email: user.email,
         points: pointsList.value[user.codeforces_id],
+        rating: user.rating,
+        phone: user.phone,
       };
     }
   );
@@ -121,12 +129,12 @@ const onUpdateOptions = async (options: {
   queryOptions.page_size = options.itemsPerPage;
   queryOptions.page = options.page;
   await getUsers();
-  if(options.sortBy.length == 0) return;
+  if (options.sortBy.length == 0) return;
   const sortBy = options.sortBy[0].key;
   const sortDesc = options.sortBy[0].order;
   if (sortBy) {
     usersList.value.sort((a: any, b: any) => {
-      return sortDesc==='asc' ? b[sortBy] - a[sortBy] : a[sortBy] - b[sortBy];
+      return sortDesc === "asc" ? b[sortBy] - a[sortBy] : a[sortBy] - b[sortBy];
     });
   }
 };
@@ -142,16 +150,36 @@ const onRangeChange = async (dates: RangeValue, dateStrings: string[]) => {
 };
 
 const rangePresets = ref([
-  { label: 'Last 7 Days', value: [dayjs().add(-7, 'd'), dayjs()] },
-  { label: 'Last 14 Days', value: [dayjs().add(-14, 'd'), dayjs()] },
-  { label: 'Last 30 Days', value: [dayjs().add(-30, 'd'), dayjs()] },
-  { label: 'Last 90 Days', value: [dayjs().add(-90, 'd'), dayjs()] },
-  { label: 'Last 180 Days', value: [dayjs().add(-180, 'd'), dayjs()] },
-  { label: 'Last 365 Days', value: [dayjs().add(-365, 'd'), dayjs()] },
-  { label: 'Last 2 Years', value: [dayjs().add(-2, 'y'), dayjs()] },
-  { label: 'Last 5 Years', value: [dayjs().add(-5, 'y'), dayjs()]},
+  { label: "Last 7 Days", value: [dayjs().add(-7, "d"), dayjs()] },
+  { label: "Last 14 Days", value: [dayjs().add(-14, "d"), dayjs()] },
+  { label: "Last 30 Days", value: [dayjs().add(-30, "d"), dayjs()] },
+  { label: "Last 90 Days", value: [dayjs().add(-90, "d"), dayjs()] },
+  { label: "Last 180 Days", value: [dayjs().add(-180, "d"), dayjs()] },
+  { label: "Last 365 Days", value: [dayjs().add(-365, "d"), dayjs()] },
+  { label: "Last 2 Years", value: [dayjs().add(-2, "y"), dayjs()] },
+  { label: "Last 5 Years", value: [dayjs().add(-5, "y"), dayjs()] },
 ]);
-const size = ref<any>('large');
+const size = ref<any>("large");
+
+const editItem = (item: any) => {};
+const deleteItem = (item: any) => {
+  console.log("deleteItem", item);
+};
+const cancel = (e: MouseEvent) => {
+  return;
+};
+const setRulesDialog = ref(false);
+const openRulesDialog = () => {
+  setRulesDialog.value = true;
+};
+const points_list = ref([2, 2, 3, 3, 4, 5, 5, 5, 5, 5, 10]);
+const saveRules = async () => {
+  if (check(points_list.value, queryData.points_list)) {
+    queryData.points_list = points_list.value;
+    await getPoints();
+  }
+  setRulesDialog.value = false;
+};
 </script>
 <template>
   <v-container>
@@ -169,13 +197,19 @@ const size = ref<any>('large');
             ></v-text-field>
           </v-col>
           <v-col cols="12" lg="8" md="6" class="text-right">
-            <!-- need RangePicker -->
-            <a-range-picker
-              v-model:value="value"
-              :presets="rangePresets"
-              @change="onRangeChange"
-              :size="size"
-            />
+            <a-space>
+              <a-button type="default" :size="size" @click="openRulesDialog">
+                Set Rules
+              </a-button>
+
+              <!-- need RangePicker -->
+              <a-range-picker
+                v-model:value="value"
+                :presets="rangePresets"
+                @change="onRangeChange"
+                :size="size"
+              />
+            </a-space>
           </v-col>
         </v-row>
       </v-card-text>
@@ -194,9 +228,6 @@ const size = ref<any>('large');
         >
           <template v-slot:item="{ item }">
             <tr class="">
-              <td class="font-weight-bold text-body-2">
-                <CopyLabel :text="item.value.codeforces_id" />
-              </td>
               <td class="d-none"></td>
               <td>
                 <div class="d-flex align-center py-1">
@@ -204,6 +235,7 @@ const size = ref<any>('large');
                     <v-img
                       :src="item.value.avatar"
                       width="65px"
+                      height="65px"
                       class="rounded-circle img-fluid"
                     ></v-img>
                   </div>
@@ -218,14 +250,253 @@ const size = ref<any>('large');
                   </div>
                 </div>
               </td>
-              <td class="font-weight-bold text-body-2">
-                <CopyLabel :text="item.value.codeforces_id" />
-              </td>
+              <td class="font-weight-bold">{{ item.value.rating }}</td>
               <td class="font-weight-bold">{{ item.value.points }}</td>
+              <td class="font-weight-bold text-body-2">
+                <CopyLabel :text="item.value.phone" />
+              </td>
+              <td class="font-weight-bold text-body-2">
+                <CopyLabel :text="item.value.email" />
+              </td>
+              <td>
+                <div class="d-flex align-center">
+                  <v-tooltip text="Open">
+                    <template v-slot:activator="{ props }">
+                      <v-btn
+                        color="blue"
+                        icon
+                        variant="text"
+                        v-bind="props"
+                        :to="`/data/users/${item.value.codeforces_id}`"
+                      >
+                        <v-icon>mdi-open-in-new </v-icon>
+                      </v-btn>
+                    </template>
+                  </v-tooltip>
+                  <v-tooltip text="Delete">
+                    <template v-slot:activator="{ props }">
+                      <a-popconfirm
+                        title="Are you sure delete this user?"
+                        ok-text="Yes"
+                        v-bind="props"
+                        cancel-text="No"
+                        @confirm="deleteItem(item)"
+                        @cancel="cancel"
+                      >
+                        <v-icon>mdi-delete-outline</v-icon>
+                      </a-popconfirm>
+                    </template>
+                  </v-tooltip>
+                </div>
+              </td>
             </tr>
           </template>
         </v-data-table-server>
       </v-card-text>
     </v-card>
   </v-container>
+
+  <v-dialog persistent v-model="setRulesDialog" width="600">
+    <v-card>
+      <v-card-title class="pa-4 d-flex align-center">
+        <span class="flex-fill">Edit Rules</span>
+        <v-btn
+          variant="text"
+          rounded
+          icon="mdi-close"
+          size="small"
+          color="primary"
+          class="mr-n3"
+          @click="setRulesDialog = false"
+        >
+        </v-btn>
+      </v-card-title>
+      <v-divider></v-divider>
+      <a-row>
+        <v-col cols="12" md="1">
+          <a-button type="default" :size="size"> A </a-button>
+        </v-col>
+        <v-col cols="12" md="8">
+          <a-slider v-model:value="points_list[0]" :min="0" :max="10" />
+        </v-col>
+        <v-col cols="12" md="2">
+          <a-input-number
+            v-model:value="points_list[0]"
+            :min="0"
+            :max="10"
+            style="margin-left: 16px"
+          />
+        </v-col>
+      </a-row>
+      <a-row>
+        <v-col cols="12" md="1">
+          <a-button type="default" :size="size"> B </a-button>
+        </v-col>
+        <v-col cols="12" md="8">
+          <a-slider v-model:value="points_list[1]" :min="0" :max="10" />
+        </v-col>
+        <v-col cols="12" md="2">
+          <a-input-number
+            v-model:value="points_list[1]"
+            :min="0"
+            :max="10"
+            style="margin-left: 16px"
+          />
+        </v-col>
+      </a-row>
+
+      <a-row>
+        <v-col cols="12" md="1">
+          <a-button type="default" :size="size"> C </a-button>
+        </v-col>
+        <v-col cols="12" md="8">
+          <a-slider v-model:value="points_list[2]" :min="0" :max="10" />
+        </v-col>
+        <v-col cols="12" md="2">
+          <a-input-number
+            v-model:value="points_list[2]"
+            :min="0"
+            :max="10"
+            style="margin-left: 16px"
+          />
+        </v-col>
+      </a-row>
+
+      <a-row>
+        <v-col cols="12" md="1">
+          <a-button type="default" :size="size"> D </a-button>
+        </v-col>
+        <v-col cols="12" md="8">
+          <a-slider v-model:value="points_list[3]" :min="0" :max="10" />
+        </v-col>
+        <v-col cols="12" md="2">
+          <a-input-number
+            v-model:value="points_list[3]"
+            :min="0"
+            :max="10"
+            style="margin-left: 16px"
+          />
+        </v-col>
+      </a-row>
+      <a-row>
+        <v-col cols="12" md="1">
+          <a-button type="default" :size="size"> E </a-button>
+        </v-col>
+        <v-col cols="12" md="8">
+          <a-slider v-model:value="points_list[4]" :min="0" :max="10" />
+        </v-col>
+        <v-col cols="12" md="2">
+          <a-input-number
+            v-model:value="points_list[4]"
+            :min="0"
+            :max="10"
+            style="margin-left: 16px"
+          />
+        </v-col>
+      </a-row>
+      <a-row>
+        <v-col cols="12" md="1">
+          <a-button type="default" :size="size"> F </a-button>
+        </v-col>
+        <v-col cols="12" md="8">
+          <a-slider v-model:value="points_list[5]" :min="0" :max="10" />
+        </v-col>
+        <v-col cols="12" md="2">
+          <a-input-number
+            v-model:value="points_list[5]"
+            :min="0"
+            :max="10"
+            style="margin-left: 16px"
+          />
+        </v-col>
+      </a-row>
+      <a-row>
+        <v-col cols="12" md="1">
+          <a-button type="default" :size="size"> G </a-button>
+        </v-col>
+        <v-col cols="12" md="8">
+          <a-slider v-model:value="points_list[6]" :min="0" :max="10" />
+        </v-col>
+        <v-col cols="12" md="2">
+          <a-input-number
+            v-model:value="points_list[6]"
+            :min="0"
+            :max="10"
+            style="margin-left: 16px"
+          />
+        </v-col>
+      </a-row>
+      <a-row>
+        <v-col cols="12" md="1">
+          <a-button type="default" :size="size"> H </a-button>
+        </v-col>
+        <v-col cols="12" md="8">
+          <a-slider v-model:value="points_list[7]" :min="0" :max="10" />
+        </v-col>
+        <v-col cols="12" md="2">
+          <a-input-number
+            v-model:value="points_list[7]"
+            :min="0"
+            :max="10"
+            style="margin-left: 16px"
+          />
+        </v-col>
+      </a-row>
+      <a-row>
+        <v-col cols="12" md="1">
+          <a-button type="default" :size="size"> >H </a-button>
+        </v-col>
+        <v-col cols="12" md="8">
+          <a-slider v-model:value="points_list[8]" :min="0" :max="10" />
+        </v-col>
+        <v-col cols="12" md="2">
+          <a-input-number
+            v-model:value="points_list[8]"
+            :min="0"
+            :max="10"
+            style="margin-left: 16px"
+          />
+        </v-col>
+      </a-row>
+      <a-row>
+        <v-col cols="12" md="12">
+          <a-button type="default" :size="size"> 参与训练赛积分 </a-button>
+        </v-col>
+        <v-col cols="12" md="9">
+          <a-slider v-model:value="points_list[8]" :min="0" :max="10" />
+        </v-col>
+        <v-col cols="12" md="2">
+          <a-input-number
+            v-model:value="points_list[9]"
+            :min="0"
+            :max="10"
+            style="margin-left: 16px"
+          />
+        </v-col>
+      </a-row>
+      <a-row>
+        <v-col cols="12" md="12">
+          <a-button type="default" :size="size"> 训练赛奖励积分池 </a-button>
+        </v-col>
+        <v-col cols="12" md="9">
+          <a-slider v-model:value="points_list[8]" :min="0" :max="10" />
+        </v-col>
+        <v-col cols="12" md="2">
+          <a-input-number
+            v-model:value="points_list[10]"
+            :min="0"
+            :max="10"
+            style="margin-left: 16px"
+          />
+        </v-col>
+      </a-row>
+
+      <v-divider></v-divider>
+      <v-card-actions class="pa-4">
+        <v-btn variant="outlined" @click="setRulesDialog = false">Cancel</v-btn>
+        <v-spacer></v-spacer>
+        <v-btn variant="flat" color="primary" @click="saveRules">Save</v-btn>
+      </v-card-actions>
+    </v-card>
+  </v-dialog>
 </template>

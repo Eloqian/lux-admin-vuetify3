@@ -12,7 +12,7 @@ import ApexGradientChart from "@/components/charts/apexchart/ApexGradientChart.v
 <template>
   <v-container>
     <FeatureCard title="ApexGradientChart">
-      <ApexGradientChart />
+      <ApexGradientChart/>
     </FeatureCard>
 
     <FeatureCard title="ApexHeatMapCharts">

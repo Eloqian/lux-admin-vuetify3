@@ -52,6 +52,27 @@ const data = [
     [38225, 81.4, 64715810, "United Kingdom", 2015],
     [53354, 79.1, 321773631, "United States", 2015],
   ],
+  [
+    [23005, 62.8, 22368973, "Australia", 2023],
+    [34294, 62.7, 35939927, "Canada", 2023],
+    [13334, 66.9, 1376048943, "China", 2023],
+    [21291, 68.5, 11389562, "Cuba", 2023],
+    [38923, 70.8, 5503457, "Finland", 2023],
+    [37599, 71.9, 64395345, "France", 2023],
+    [44053, 72.1, 80688545, "Germany", 2023],
+    [42182, 72.8, 329425, "Iceland", 2023],
+    [5903, 66.8, 1311050527, "India", 2023],
+    [36162, 73.5, 126573481, "Japan", 2023],
+    [1390, 71.4, 25155317, "North Korea", 2023],
+    [34644, 70.7, 50293439, "South Korea", 2023],
+    [34186, 70.6, 4528526, "New Zealand", 2023],
+    [64304, 71.6, 5210967, "Norway", 2023],
+    [24787, 77.3, 38611794, "Poland", 2023],
+    [23038, 73.13, 143456918, "Russia", 2023],
+    [19360, 76.5, 78665830, "Turkey", 2023],
+    [38225, 81.4, 64715810, "United Kingdom", 2023],
+    [53354, 79.1, 321773631, "United States", 2023],
+  ]
 ];
 
 const option = computed<EChartsOption>(() => ({
@@ -73,7 +94,7 @@ const option = computed<EChartsOption>(() => ({
   legend: {
     right: "10%",
     top: "3%",
-    data: ["1990", "2015"],
+    data: ["1990", "2015", "2023"],
   },
   grid: {
     left: "8%",
@@ -157,6 +178,39 @@ const option = computed<EChartsOption>(() => ({
           {
             offset: 1,
             color: "rgb(25, 183, 207)",
+          },
+        ]),
+      },
+    },
+    {
+      name: "2023",
+      data: data[2],
+      type: "scatter",
+      symbolSize: function (data) {
+        return Math.sqrt(data[2]) / 5e2;
+      },
+      emphasis: {
+        focus: "series",
+        label: {
+          show: true,
+          formatter: function (param) {
+            return param.data[3];
+          },
+          position: "top",
+        },
+      },
+      itemStyle: {
+        shadowBlur: 10,
+        shadowColor: "rgba(120, 36, 50, 0.5)",
+        shadowOffsetY: 5,
+        color: new echarts.graphic.RadialGradient(0.4, 0.3, 1, [
+          {
+            offset: 0,
+            color: "rgb(123, 251, 118)",
+          },
+          {
+            offset: 1,
+            color: "rgb(46, 204, 72)",
           },
         ]),
       },

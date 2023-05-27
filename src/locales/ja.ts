@@ -27,6 +27,7 @@ export default {
     username: "Codeforce ハンドル",
     email: "Eメール",
     password: "パスワード",
+    confirmpassword: "パスワードを認証する",
     button: "アカウントを作成する",
     orsign: "またはでサインアップ",
     agree: "サインアップすると、",

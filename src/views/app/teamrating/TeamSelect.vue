@@ -7,20 +7,20 @@
             <v-card-title class="bg-white py-4 font-weight-bold">
               Choose Team Members
             </v-card-title>
-            <v-col cols="12" sm="6">
+            <!-- <v-col cols="12" sm="10">
               <transition-group
                 name="avatar"
                 tag="div"
                 class="select-area"
                 mode="out-in"
               >
-                <a-avatar
-                  :size="{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }"
+                <v-avatar class="mx-auto" size="100"
                   v-if="selectedTeam[0]"
                   :key="selectedTeam[0].id"
-                  :src="selectedTeam[0].avatar"
                   @click="removeFromSelected(0)"
-                ></a-avatar>
+                >
+                  <v-img :src="selectedTeam[0].avatar" alt="alt" />
+                </v-avatar>
                 <a-avatar
                   :size="{ xs: 24, sm: 32, md: 40, lg: 64, xl: 80, xxl: 100 }"
                   v-if="selectedTeam[1]"
@@ -36,7 +36,28 @@
                   @click="removeFromSelected(2)"
                 />
               </transition-group>
-            </v-col>
+            </v-col> -->
+            <v-item-group mandatory selected-class="active-card">
+              <a-row align="start" justify="start">
+                <a-col :span="3" v-for="item, index in selectedTeam">
+                  <v-item v-slot="{ isSelected, selectedClass }">
+                    <v-card :theme="isSelected ? 'dark' : 'light'" max-width="200" max-height="300"
+                      class="base-card text-center mx-auto pa-10 pa-md-15 d-flex flex-column justify-center"
+                      :class="selectedClass" @click="removeFromSelected(index)">
+                      <v-avatar class="mx-auto" size="80">
+                        <v-img :src="item.avatar" alt="alt" />
+                      </v-avatar>
+                      <h6 class="text-h6">{{ item.name }}</h6>
+                      <p class="text-body-1 text-blue-grey">
+                        {{ item.name }}
+                      </p>
+                      <p class="text-body-2 text-grey">{{ item.id }}</p>
+                    </v-card>
+                  </v-item>
+                </a-col>
+              </a-row>
+
+            </v-item-group>
           </v-card>
         </v-col>
       </v-row>
@@ -47,14 +68,8 @@
           <v-card-text>
             <v-row>
               <v-col cols="12" lg="4" md="6">
-                <v-text-field
-                  density="compact"
-                  v-model="search"
-                  label="Search Name"
-                  hide-details
-                  variant="outlined"
-                  color="primary"
-                ></v-text-field>
+                <v-text-field density="compact" v-model="search" label="Search Name" hide-details variant="outlined"
+                  color="primary"></v-text-field>
               </v-col>
             </v-row>
           </v-card-text>
@@ -65,16 +80,12 @@
       <v-container>
         <v-item-group mandatory selected-class="active-card">
           <v-row align="center" justify="center">
-            <v-col cols="12" sm="8" md="4" lg="2" v-for="item in teamList">
+            <v-col cols="12" sm="4" md="3" lg="2" v-for="item in filteredList">
               <v-item v-slot="{ isSelected, selectedClass }">
-                <v-card
-                  :theme="isSelected ? 'dark' : 'light'"
-                  max-width="280"
+                <v-card :theme="isSelected ? 'dark' : 'light'" max-width="280"
                   class="base-card text-center mx-auto pa-10 pa-md-15 d-flex flex-column justify-center"
-                  :class="selectedClass"
-                  @click="addToSelected(item)"
-                >
-                  <v-avatar class="mx-auto" size="100">
+                  :class="selectedClass" @click="addToSelected(item)">
+                  <v-avatar class="mx-auto" size="80">
                     <v-img :src="item.avatar" alt="alt" />
                   </v-avatar>
                   <h6 class="text-h6">{{ item.name }}</h6>
@@ -131,6 +142,13 @@ const removeFromSelected = (index: number) => {
     props.selectedTeam.filter((_, i) => i !== index)
   );
 };
+
+//Methods
+const filteredList = computed(() => {
+  return props.teamList.filter((user: any) => {
+    return user.name.toLowerCase().includes(search.value.toLowerCase());
+  });
+});
 </script>
 
 <style scoped lang="less">
@@ -159,5 +177,4 @@ const removeFromSelected = (index: number) => {
   transform: scale(1.05);
   transition: 0.3s ease-out;
 }
-
 </style>

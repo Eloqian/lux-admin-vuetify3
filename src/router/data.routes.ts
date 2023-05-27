@@ -7,8 +7,19 @@ export default [
       requiresAuth: true,
       layout: "ui",
       category: "Data",
-      title: "UsersDataTable",
+      title: "UsersRankTable",
     },
+  },
+  {
+    path: "/data/users/:username",
+    component: () =>
+      import(
+        /* webpackChunkName: "unsplash-user" */ "@/views/datatable/UsersOwnPage.vue"
+      ),
+    meta: {
+      requiresAuth: true,
+      layout: "ui",
+    }
   },
   // photos Data Page
   {

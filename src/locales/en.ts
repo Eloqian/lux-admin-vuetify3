@@ -27,6 +27,7 @@ export default {
     username: "CodeForces Handle",
     email: "Email",
     password: "Password",
+    confirmpassword: "Confirm Password",
     button: "Create Account",
     orsign: "Or sign up with",
     agree: "By signing up, you agree to the",
@@ -112,7 +113,7 @@ export default {
     echartOthers: "Echart Others ",
     apexChart: "ApexChart ",
     data: {
-      usersDataPage: "Users Data",
+      usersDataPage: "Points Rank",
       photosDataPage: "Photos Data",
       collectionsDataPage: "Collections Data",
       topicsDataPage: "Topics Data",

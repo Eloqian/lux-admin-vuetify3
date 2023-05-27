@@ -14,6 +14,7 @@ const refLoginForm = ref();
 const isFormValid = ref(true);
 const email = ref("");
 const password = ref("");
+const confirmPassword = ref("");
 
 // show password field
 const showPassword = ref(false);
@@ -21,6 +22,11 @@ const showPassword = ref(false);
 // Submit
 const handleRegister = async () => {
   const { valid } = await refLoginForm.value.validate();
+  if (password.value !== confirmPassword.value) {
+    const snackbarStore = useSnackbarStore();
+    snackbarStore.showErrorMessage("Password and Confirm Password are not the same")
+    return;
+  }
   if (valid) {
     isLoading.value = true;
     isSignInDisabled.value = true;
@@ -81,7 +87,7 @@ const resetErrors = () => {
     <v-card-title primary-title class="my-4 text-h4">
       <span class="flex-fill"> {{ $t("register.title") }} </span>
     </v-card-title>
-    <v-card-subtitle>Let's build amazing products</v-card-subtitle>
+    <v-card-subtitle>Let's elo amazing things</v-card-subtitle>
     <!-- sign in form -->
 
     <v-card-text>
@@ -139,6 +145,26 @@ const resetErrors = () => {
           bg-color="#fff"
           :rules="passwordRules"
           name="password"
+          outlined
+          validateOn="blur"
+          @change="resetErrors"
+          @keyup.enter="handleRegister"
+          @click:append-inner="showPassword = !showPassword"
+        ></v-text-field>
+        <v-text-field
+          ref="refConfirmPassword"
+          v-model="confirmPassword"
+          :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
+          :type="showPassword ? 'text' : 'password'"
+          :error="error"
+          :error-messages="errorMessages"
+          :label="$t('register.confirmPassword')"
+          density="default"
+          variant="underlined"
+          color="primary"
+          bg-color="#fff"
+          :rules="passwordRules"
+          name="confirmPassword"
           outlined
           validateOn="blur"
           @change="resetErrors"

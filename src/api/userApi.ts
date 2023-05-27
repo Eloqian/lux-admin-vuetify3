@@ -68,6 +68,22 @@ export function getUserPointList(data) {
   })
 }
 
+export function get_user_by_cf_id(data) {
+  return request({
+    url: '/system/user/get_user_by_cf_id/',
+    method: 'post',
+    data
+  })
+}
+
+export function get_tags_rating(data) {
+  return request({
+    url: '/system/tags/get_tags_rating/',
+    method: 'post',
+    data
+  })
+}
+
 export function getUser(id) {
   return request({
     url: `/system/user/${id}/`,

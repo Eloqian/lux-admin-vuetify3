@@ -26,11 +26,13 @@ import Antd from 'ant-design-vue'
 // import 'ant-design-vue/dist/antd.js'
 // import 'ant-design-vue/dist/antd.main.js'
 import 'ant-design-vue/dist/reset.css'
+import VueCalendarHeatmap from 'vue3-calendar-heatmap'
 
 const pinia = createPinia();
 pinia.use(piniaPersist);
 const app = createApp(App);
 
+app.use(VueCalendarHeatmap)
 app.use(Antd)
 app.use(router);
 app.use(PerfectScrollbar);

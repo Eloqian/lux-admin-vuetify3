@@ -21,43 +21,43 @@ export default {
       ],
     },
     {
-      text: "chatgpt",
-      items: menuAi,
+      text: "Data",
+      items: menuData,
     },
     {
       text: "Apps",
       items: menuApps,
     },
     {
-      text: "Data",
-      items: menuData,
+      text: "chatgpt",
+      items: menuAi,
     },
-    {
-      text: "Landing",
-      items: [
-        ...menuLanding,
-        // {
-        //   icon: "mdi-airplane-landing",
-        //   key: "menu.landingPage",
-        //   text: "Landing Page",
-        //   link: "/landing",
-        // },
-      ],
-    },
+    // {
+    //   text: "Landing",
+    //   items: [
+    //     ...menuLanding,
+    //     // {
+    //     //   icon: "mdi-airplane-landing",
+    //     //   key: "menu.landingPage",
+    //     //   text: "Landing Page",
+    //     //   link: "/landing",
+    //     // },
+    //   ],
+    // },
 
-    {
-      text: "UI - Theme Preview",
-      items: menuUI,
-    },
-    {
-      text: "Pages",
-      key: "menu.pages",
-      items: menuPages,
-    },
-    {
-      text: "Charts",
-      key: "menu.charts",
-      items: menuCharts,
-    },
+    // {
+    //   text: "UI - Theme Preview",
+    //   items: menuUI,
+    // },
+    // {
+    //   text: "Pages",
+    //   key: "menu.pages",
+    //   items: menuPages,
+    // },
+    // {
+    //   text: "Charts",
+    //   key: "menu.charts",
+    //   items: menuCharts,
+    // },
   ],
 };

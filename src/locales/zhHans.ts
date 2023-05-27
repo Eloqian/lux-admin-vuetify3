@@ -27,6 +27,7 @@ export default {
     username: "Codeforces 用户名",
     email: "电子邮件",
     password: "密码",
+    confirmpassword: "确认密码",
     button: "创建帐号",
     orsign: "或注册",
     agree: "签署即表示您同意",
@@ -110,7 +111,7 @@ export default {
     echartOthers: "Echart Others ",
     apexChart: "ApexChart ",
     data: {
-      usersDataPage: "用户数据",
+      usersDataPage: "积分排名",
       photosDataPage: "照片数据",
       collectionsDataPage: "集合数据",
       topicsDataPage: "主题数据",
