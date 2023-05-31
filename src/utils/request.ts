@@ -8,7 +8,7 @@ import { useSnackbarStore } from "@/stores/snackbarStore"
 const service = axios.create({
     baseURL, // url = base url + request url
     // withCredentials: true, // send cookies when cross-domain requests
-    timeout: 10000 // request timeout
+    timeout: 50000 // request timeout
 })
 
 // request interceptor

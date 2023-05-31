@@ -9,7 +9,7 @@ import EmailEditor from "../components/EmailEditor.vue";
 const messagePanel = ref([3]);
 const content = ref("");
 const submit = () => {
-  console.log(content.value);
+  // console.log(content.value);
 };
 </script>
 

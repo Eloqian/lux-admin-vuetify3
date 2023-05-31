@@ -15,10 +15,14 @@ export const useProfileStore = defineStore({
       email: "",
       avatar: authStore.avatar,
       location: "Tokyo,Japan",
+      gender: "",
+      id_number: "",
+      student_number: "",
+      retired: false,
       role: authStore.perms[0],
       disabled: false,
       phone: "+1-202-555-0175",
-      about: "Full Stack Developer",
+      about: "",
       lastSignIn: "2023-03-29T01:11:13Z",
     },
     authorized: {
@@ -39,6 +43,10 @@ export const useProfileStore = defineStore({
           this.basic.avatar = response.data.title_photo
           this.basic.phone = response.data.phone
           this.basic.id = response.data.id
+          this.basic.retired = response.data.retired
+          this.basic.student_number = response.data.student_number
+          this.basic.id_number = response.data.id_number
+          this.basic.gender = response.data.gender
           this.basic.realname = response.data.name
           this.basic.email = response.data.email
           this.basic.disabled = !response.data.is_active
@@ -54,7 +62,14 @@ export const useProfileStore = defineStore({
       const newBasicInfo = {
         name: info.realname,
         avatar: info.avatar,
+        email: info.email,
+        gender: info.gender,
+        retired: info.retired,
+        id_number: info.id_number,
+        student_number: info.student_number,
+        phone: info.phone,
       };
+      // console.log("newBasicInfo=", newBasicInfo)
       return new Promise((resolve, reject) => {
         updateUser(this.basic.id, newBasicInfo).then((response) => {
           resolve(true)

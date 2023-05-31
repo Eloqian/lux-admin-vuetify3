@@ -12,6 +12,7 @@ export default {
     policy: "隐私政策",
   },
   login: {
+    username: "用户名",
     title: "登录",
     email: "电子邮件",
     password: "密码",
@@ -24,10 +25,10 @@ export default {
   },
   register: {
     title: "创建帐号",
-    username: "Codeforces 用户名",
+    username: "Codeforces 用户名（用户名）",
     email: "电子邮件",
     password: "密码",
-    confirmpassword: "确认密码",
+    confirmPassword: "确认密码",
     button: "创建帐号",
     orsign: "或注册",
     agree: "签署即表示您同意",

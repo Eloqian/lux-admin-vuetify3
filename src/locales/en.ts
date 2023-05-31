@@ -12,6 +12,7 @@ export default {
     policy: "Privacy Policy",
   },
   login: {
+    username: "Username",
     title: "Sign In",
     email: "Email",
     password: "Password",
@@ -24,10 +25,10 @@ export default {
   },
   register: {
     title: "Create Account",
-    username: "CodeForces Handle",
+    username: "CodeForces Handle(Username)",
     email: "Email",
     password: "Password",
-    confirmpassword: "Confirm Password",
+    confirmPassword: "Confirm Password",
     button: "Create Account",
     orsign: "Or sign up with",
     agree: "By signing up, you agree to the",

@@ -86,7 +86,7 @@ const get_heatmap = async () => {
       count: date_count[key],
     };
   });
-  console.log(heatmap_data.value);
+  // console.log(heatmap_data.value);
   heatmap_loading.value = true;
 };
 
@@ -96,7 +96,7 @@ const get_gredientChart = async () => {
     `https://codeforces.com/api/user.rating?handle=${username}`
   );
   const result = data.data.result;
-  console.log(result);
+  // console.log(result);
   let chart_data = {
     name: "Rating",
     data: result.map((item) => {
@@ -182,8 +182,8 @@ const echart_loading = ref(false);
 const get_echart_data = async () => {
   const tags_rating = await get_tags_rating({ handles: username });
   const tags = tags_rating.data.user_tag_rating;
-  console.log("tags=", tags);
-  console.log("tags.length=", tags.length);
+  // console.log("tags=", tags);
+  // console.log("tags.length=", tags.length);
   let echart_data = Object.keys(tags).map((key) => {
     return [
       tags[key].count,
@@ -193,9 +193,9 @@ const get_echart_data = async () => {
       username,
     ];
   });
-  console.log("echart_data=", echart_data);
+  // console.log("echart_data=", echart_data);
   data[0] = echart_data;
-  console.log("data=", data);
+  // console.log("data=", data);
 
   const { setOption, showLoading } = useChart(
     chartEl as Ref<HTMLDivElement>,

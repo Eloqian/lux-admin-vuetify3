@@ -12,6 +12,7 @@ export default {
     policy: "個人情報保護方針",
   },
   login: {
+    username: "ユーザー名",
     title: "サインイン",
     email: "Eメール",
     password: "パスワード",
@@ -24,10 +25,10 @@ export default {
   },
   register: {
     title: "アカウントを作成する",
-    username: "Codeforce ハンドル",
+    username: "Codeforce ハンドル（ユーザー名）",
     email: "Eメール",
     password: "パスワード",
-    confirmpassword: "パスワードを認証する",
+    confirmPassword: "パスワードを認証する",
     button: "アカウントを作成する",
     orsign: "またはでサインアップ",
     agree: "サインアップすると、",

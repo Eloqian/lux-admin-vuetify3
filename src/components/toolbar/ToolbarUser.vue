@@ -12,8 +12,8 @@ const router = useRouter();
 const authStore = useAuthStore();
 const handleLogout = () => {
   authStore.logout();
-  console.log("---");
-  console.log(router);
+  // console.log("---");
+  // console.log(router);
 };
 
 const navs = [

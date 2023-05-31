@@ -48,8 +48,8 @@ const pointsList = ref({});
 const allusers = ref([]);
 let date_from = getlastyear();
 let date_to = new Date().toISOString();
-console.log("date_from = ", date_from);
-console.log("date_to = ", date_to);
+// console.log("date_from = ", date_from);
+// console.log("date_to = ", date_to);
 
 const value = ref<[Dayjs, Dayjs]>([dayjs(date_from), dayjs(date_to)]);
 
@@ -80,7 +80,11 @@ const getUsers = async () => {
   loading.value = true;
   const params = queryOptions;
   const usersResponse = await getUserList(params);
-
+  usersResponse.data.results = usersResponse.data.results.filter(
+    (user: { username: any }) => {
+      return user.username !== "admin";
+    }
+  );
   allusers.value = usersResponse.data.results.map(
     (user: { codeforces_id: any }) => {
       return user.codeforces_id;
@@ -143,8 +147,8 @@ const onRangeChange = async (dates: RangeValue, dateStrings: string[]) => {
   if (dates) {
     date_from = dates[0].toISOString();
     date_to = dates[1].toISOString();
-    console.log("date_from = ", date_from);
-    console.log("date_to = ", date_to);
+    // console.log("date_from = ", date_from);
+    // console.log("date_to = ", date_to);
   }
   await getUsers();
 };
@@ -163,7 +167,7 @@ const size = ref<any>("large");
 
 const editItem = (item: any) => {};
 const deleteItem = (item: any) => {
-  console.log("deleteItem", item);
+  // console.log("deleteItem", item);
 };
 const cancel = (e: MouseEvent) => {
   return;
@@ -273,7 +277,7 @@ const saveRules = async () => {
                       </v-btn>
                     </template>
                   </v-tooltip>
-                  <v-tooltip text="Delete">
+                  <!-- <v-tooltip text="Delete">
                     <template v-slot:activator="{ props }">
                       <a-popconfirm
                         title="Are you sure delete this user?"
@@ -286,7 +290,7 @@ const saveRules = async () => {
                         <v-icon>mdi-delete-outline</v-icon>
                       </a-popconfirm>
                     </template>
-                  </v-tooltip>
+                  </v-tooltip> -->
                 </div>
               </td>
             </tr>

@@ -42,7 +42,7 @@ const showMobileSearch = ref(false);
       <v-app-bar-nav-icon
         @click="customizeTheme.mainSidebar = !customizeTheme.mainSidebar"
       ></v-app-bar-nav-icon>
-      <div>
+      <!-- <div>
         <v-text-field
           v-if="mdAndUp"
           class="ml-2"
@@ -54,7 +54,7 @@ const showMobileSearch = ref(false);
           hide-details
           placeholder="Search"
         ></v-text-field>
-      </div>
+      </div> -->
 
       <v-spacer></v-spacer>
 
@@ -69,7 +69,7 @@ const showMobileSearch = ref(false);
             <v-icon>mdi-account-multiple-outline</v-icon>
           </v-badge>
         </v-btn>
-        <ToolbarNotifications />
+        <!-- <ToolbarNotifications /> -->
         <v-btn v-if="mdAndUp" icon to="/apps/todo">
           <v-badge :content="`${todoStore.getTodoList.length} +`" color="error">
             <v-icon>mdi-calendar-check</v-icon>

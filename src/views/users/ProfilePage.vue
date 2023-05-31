@@ -5,9 +5,9 @@
 -->
 
 <script setup lang="ts">
-import { useProfileStore } from "@/stores/profileStore"
-import { Icon } from "@iconify/vue"
-import { useSnackbarStore } from "@/stores/snackbarStore"
+import { useProfileStore } from "@/stores/profileStore";
+import { Icon } from "@iconify/vue";
+import { useSnackbarStore } from "@/stores/snackbarStore";
 
 const profileStore = useProfileStore();
 const basic = reactive({
@@ -17,6 +17,10 @@ const basic = reactive({
   email: "",
   avatar: "",
   location: "",
+  id_number: "",
+  student_number: "",
+  gender: "",
+  retired: false,
   role: "",
   disabled: false,
   about: "",
@@ -58,6 +62,10 @@ onMounted(async () => {
   basic.disabled = profile.basic.disabled;
   basic.about = profile.basic.about;
   basic.lastSignIn = profile.basic.lastSignIn;
+  basic.id_number = profile.basic.id_number;
+  basic.student_number = profile.basic.student_number;
+  basic.retired = profile.basic.retired;
+  basic.gender = profile.basic.gender;
   authorized.google = profile.authorized.google;
   authorized.facebook = profile.authorized.facebook;
   notifications.officialEmails = profile.notifications.officialEmails;
@@ -65,36 +73,39 @@ onMounted(async () => {
 });
 
 const HandleUpdateBasicInfo = async () => {
+  // console.log(basic)
   await profileStore.updateBasicInfo(basic);
   const snackbarStore = useSnackbarStore();
-  snackbarStore.showSuccessMessage("Update Success")
+  snackbarStore.showSuccessMessage("Update Success");
 };
 
 const HandleUpdatePassword = async () => {
   if (passwords.newPassword !== passwords.confirmPassword) {
     const snackbarStore = useSnackbarStore();
-    snackbarStore.showErrorMessage("Password not match")
+    snackbarStore.showErrorMessage("Password not match");
     return;
   }
   if (passwords.newPassword.length < 6) {
     const snackbarStore = useSnackbarStore();
-    snackbarStore.showErrorMessage("Password must be at least 6 characters")
+    snackbarStore.showErrorMessage("Password must be at least 6 characters");
     return;
   }
   if (passwords.currentPassword === passwords.newPassword) {
     const snackbarStore = useSnackbarStore();
-    snackbarStore.showErrorMessage("New password cannot be the same as the old password")
+    snackbarStore.showErrorMessage(
+      "New password cannot be the same as the old password"
+    );
     return;
   }
   try {
     await profileStore.updatePassword(passwords);
-  }catch (e) {
+  } catch (e) {
     const snackbarStore = useSnackbarStore();
-    snackbarStore.showErrorMessage(e.message)
+    snackbarStore.showErrorMessage(e.message);
     return;
   }
   const snackbarStore = useSnackbarStore();
-  snackbarStore.showSuccessMessage("Update Success")
+  snackbarStore.showSuccessMessage("Update Success");
   setTimeout(() => {
     window.location.reload();
   }, 1500);
@@ -123,10 +134,10 @@ Basic with Icons
             </div>
           </div>
           <v-divider></v-divider>
-          <div class="py-5 px-10">
+          <!-- <div class="py-5 px-10">
             <v-icon color="grey"> mdi-map-marker </v-icon>
             <span class="ml-4">{{ basic.location }}</span>
-          </div>
+          </div> -->
 
           <v-divider></v-divider>
           <div class="py-5 px-10">
@@ -153,7 +164,7 @@ Basic with Icons
           <v-card-text class="pa-7">
             <v-row>
               <v-col cols="12" sm="6">
-                <v-label class="font-weight-medium mb-2">CodeforcesID</v-label>
+                <v-label class="font-weight-medium mb-2">Codeforces ID</v-label>
                 <v-text-field
                   class="bg-blue-grey-lighten-5"
                   readonly
@@ -162,33 +173,90 @@ Basic with Icons
                   variant="outlined"
                   density="compact"
                   type="text"
-                  placeholder="John Deo"
+                  placeholder=""
                   hide-details
                 />
               </v-col>
               <v-col cols="12" sm="6">
                 <v-label class="font-weight-medium mb-2">Realname</v-label>
                 <v-text-field
+                  class="bg-blue-grey-lighten-5"
+                  readonly
                   v-model="basic.realname"
                   color="primary"
                   variant="outlined"
                   density="compact"
                   type="text"
-                  placeholder="John Deo"
+                  placeholder=""
                   hide-details
                 />
               </v-col>
+              <v-col cols="12" sm="3">
+                <v-label class="font-weight-medium mb-2"
+                  >Gender</v-label
+                >
+                <div>
+                  <a-radio-group v-model:value="basic.gender" size="large">
+                  <a-radio-button value="male">male</a-radio-button>
+                  <a-radio-button value="female">female</a-radio-button>
+                  </a-radio-group>
+                </div>
+                 </v-col>
+                 <v-col cols="12" sm="3">
+                <v-label class="font-weight-medium mb-2"
+                  >Status</v-label
+                >
+                <div>
+                  <a-radio-group v-model:value="basic.retired" size="large">
+                  <a-radio-button :value="false">Active</a-radio-button>
+                  <a-radio-button :value="true">Retired</a-radio-button>
+                  </a-radio-group>
+                </div>
+                 </v-col>
               <v-col cols="12" sm="6">
                 <v-label class="font-weight-medium mb-2">Email</v-label>
                 <v-text-field
-                  class="bg-blue-grey-lighten-5"
-                  readonly
                   v-model="basic.email"
                   color="primary"
                   variant="outlined"
                   density="compact"
                   type="text"
-                  placeholder="John Deo"
+                  placeholder=""
+                  hide-details
+              /></v-col>
+              <v-col cols="12" sm="6">
+                <v-label class="font-weight-medium mb-2">Phone</v-label>
+                <v-text-field
+                  v-model="basic.phone"
+                  color="primary"
+                  variant="outlined"
+                  density="compact"
+                  type="text"
+                  placeholder=""
+                  hide-details
+              /></v-col>
+              <v-col cols="12" sm="6">
+                <v-label class="font-weight-medium mb-2">ID Number</v-label>
+                <v-text-field
+                  v-model="basic.id_number"
+                  color="primary"
+                  variant="outlined"
+                  density="compact"
+                  type="text"
+                  placeholder=""
+                  hide-details
+              /></v-col>
+              <v-col cols="12" sm="6">
+                <v-label class="font-weight-medium mb-2"
+                  >Student Number</v-label
+                >
+                <v-text-field
+                  v-model="basic.student_number"
+                  color="primary"
+                  variant="outlined"
+                  density="compact"
+                  type="text"
+                  placeholder=""
                   hide-details
               /></v-col>
             </v-row>

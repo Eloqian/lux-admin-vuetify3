@@ -9,6 +9,7 @@ const isSignInDisabled = ref(false);
 
 const refLoginForm = ref();
 const email = ref("");
+const username = ref("");
 const password = ref("");
 const isFormValid = ref(true);
 
@@ -20,7 +21,7 @@ const handleLogin = async () => {
   if (valid) {
     isLoading.value = true;
     isSignInDisabled.value = true;
-    authStore.loginWithEmailAndPassword(email.value, password.value).then(() => {
+    authStore.loginWithEmailAndPassword(username.value, password.value).then(() => {
       router.push("/")
     })
     .finally(() => {
@@ -28,7 +29,7 @@ const handleLogin = async () => {
       isSignInDisabled.value = false;
     })
   } else {
-    console.log("no");
+    // console.log("no");
   }
 };
 
@@ -78,7 +79,24 @@ const signInWithFacebook = () => {
         v-model="isFormValid"
         lazy-validation
       >
-        <v-text-field
+      <v-text-field
+        ref="refUsername"
+        v-model="username"
+        required
+        :error="error"
+        :label="$t('login.username')"
+        density="default"
+        variant="underlined"
+        color="primary"
+        bg-color="#fff"
+        name="username"
+        outlined
+        validateOn="blur"
+        placeholder=""
+        @keyup.enter="handleLogin"
+        @change="resetErrors"
+      ></v-text-field>
+        <!-- <v-text-field
           ref="refEmail"
           v-model="email"
           required
@@ -95,7 +113,7 @@ const signInWithFacebook = () => {
           placeholder=""
           @keyup.enter="handleLogin"
           @change="resetErrors"
-        ></v-text-field>
+        ></v-text-field> -->
         <v-text-field
           ref="refPassword"
           v-model="password"
@@ -128,14 +146,14 @@ const signInWithFacebook = () => {
           >{{ $t("login.button") }}</v-btn
         >
 
-        <div
+        <!-- <div
           class="text-grey text-center text-caption font-weight-bold text-uppercase my-5"
         >
           {{ $t("login.orsign") }}
-        </div>
+        </div> -->
 
         <!-- external providers list -->
-        <v-btn
+        <!-- <v-btn
           class="mb-2 text-capitalize"
           color="white"
           elevation="1"
@@ -158,7 +176,7 @@ const signInWithFacebook = () => {
         >
           <Icon icon="logos:facebook" class="mr-3" />
           Facebook
-        </v-btn>
+        </v-btn> -->
 
         <div v-if="errorProvider" class="error--text my-2">
           {{ errorProviderMessages }}

@@ -18,6 +18,7 @@ const confirmPassword = ref("");
 
 // show password field
 const showPassword = ref(false);
+const showConfirmPassword = ref(false);
 
 // Submit
 const handleRegister = async () => {
@@ -52,7 +53,7 @@ const handleRegister = async () => {
     }, 1500);
     router.push("/");
   } else {
-    console.log("no");
+    // console.log("no");
   }
 };
 
@@ -154,8 +155,8 @@ const resetErrors = () => {
         <v-text-field
           ref="refConfirmPassword"
           v-model="confirmPassword"
-          :append-inner-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
-          :type="showPassword ? 'text' : 'password'"
+          :append-inner-icon="showConfirmPassword ? 'mdi-eye' : 'mdi-eye-off'"
+          :type="showConfirmPassword ? 'text' : 'password'"
           :error="error"
           :error-messages="errorMessages"
           :label="$t('register.confirmPassword')"
@@ -169,7 +170,7 @@ const resetErrors = () => {
           validateOn="blur"
           @change="resetErrors"
           @keyup.enter="handleRegister"
-          @click:append-inner="showPassword = !showPassword"
+          @click:append-inner="showConfirmPassword = !showConfirmPassword"
         ></v-text-field>
         <v-btn
           :loading="isLoading"
@@ -182,14 +183,14 @@ const resetErrors = () => {
           >{{ $t("register.button") }}</v-btn
         >
 
-        <div
+        <!-- <div
           class="text-grey text-center text-caption font-weight-bold text-uppercase my-5"
         >
           {{ $t("register.orsign") }}
-        </div>
+        </div> -->
 
         <!-- external providers list -->
-        <v-btn
+        <!-- <v-btn
           class="mb-2 lighten-2 text-capitalize"
           block
           size="x-large"
@@ -209,9 +210,9 @@ const resetErrors = () => {
         >
           <Icon icon="logos:facebook" class="mr-3" />
           Facebook
-        </v-btn>
+        </v-btn> -->
 
-        <div v-if="errorProvider" class="error--text my-5">
+        <!-- <div v-if="errorProvider" class="error--text my-5">
           {{ errorProviderMessages }}
         </div>
 
@@ -225,7 +226,7 @@ const resetErrors = () => {
           <router-link class="text-primary" to="">{{
             $t("common.policy")
           }}</router-link>
-        </div>
+        </div> -->
       </v-form></v-card-text
     >
   </v-card>

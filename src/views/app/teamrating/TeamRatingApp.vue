@@ -28,7 +28,7 @@ const loading = ref<boolean>(false);
 const size = ref<SizeType>("large");
 
 const removeUser = (index: number) => {
-  console.log("index = ", index);
+  // console.log("index = ", index);
   selectedUsersInfos.value.splice(index, 1);
 };
 
@@ -67,6 +67,11 @@ const filteredUserInfos = computed(() => {
 
 onMounted(async () => {
   const usersResponse = await getUserList({});
+  usersResponse.data.results = usersResponse.data.results.filter(
+    (user: { username: any }) => {
+      return user.username !== "admin";
+    }
+  );
   allusers.value = usersResponse.data.results.map(
     (user: { codeforces_id: any }) => {
       return user.codeforces_id;
@@ -338,6 +343,7 @@ const openTeamDialog = async () => {
   loading.value = true;
   if (selectedUsersInfos.value.length < 3) {
     useSnackbarStore().showErrorMessage("至少选择3个队员！");
+    loading.value = false;
     return;
   }
   await get_gredientChart();
@@ -417,7 +423,7 @@ let gredientChart = {
 
 const chart_loading = ref(false);
 const get_gredientChart = async () => {
-  console.log(selectedUsersInfos.value);
+  // console.log(selectedUsersInfos.value);
   let data = await axios.get(
     `https://codeforces.com/api/user.rating?handle=${selectedUsersInfos.value[0].codeforces_id}`
   );
