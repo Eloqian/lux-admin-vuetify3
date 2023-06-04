@@ -9,7 +9,7 @@ if (env === 'development') {
 } else if (env === 'test') {
   baseURL = 'http://192.168.1.1/api'; // 测试环境
 } else if (env === 'production') {
-  baseURL = 'http://43.154.64.216:8000/api'; // 生产环境
+  baseURL = 'http://localhost:8000/api'; // 生产环境
 }
 export { baseURL };
 export default {

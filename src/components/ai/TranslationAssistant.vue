@@ -88,8 +88,8 @@ const translate = async () => {
   isLoading.value = true;
   try {
     const completion = await fetch(
-      "https://baixiang.yunrobot.cn/v1/chat/completions",
-      // "https://api.openai.com/v1/chat/completions",
+      // "https://baixiang.yunrobot.cn/v1/chat/completions",
+      "https://api.openai.com/v1/chat/completions",
       {
         headers: {
           "Content-Type": "application/json",

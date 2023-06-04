@@ -26,6 +26,7 @@ const usersInfos = ref<any[]>([]);
 const selectedUsersInfos = ref<any[]>([]);
 const loading = ref<boolean>(false);
 const size = ref<SizeType>("large");
+const onlyActive = ref<boolean>(true);
 
 const removeUser = (index: number) => {
   // console.log("index = ", index);
@@ -60,8 +61,11 @@ const searchKey = ref("");
 const filteredUserInfos = computed(() => {
   return usersInfos.value.filter(
     (key) =>
-      key.name.toLowerCase().includes(searchKey.value.toLowerCase()) ||
-      key.codeforces_id.toLowerCase().includes(searchKey.value.toLowerCase())
+      (key.name.toLowerCase().includes(searchKey.value.toLowerCase()) ||
+        key.codeforces_id
+          .toLowerCase()
+          .includes(searchKey.value.toLowerCase())) &&
+      (!onlyActive.value || !key.retired)
   );
 });
 
@@ -86,6 +90,7 @@ onMounted(async () => {
       rating: any;
       phone: string;
       email: string;
+      retired: boolean;
     }) => {
       return {
         avatar: user.avatar,
@@ -96,6 +101,7 @@ onMounted(async () => {
         email: user.email,
         rating: user.rating,
         points: 0,
+        retired: user.retired,
       };
     }
   );
@@ -110,6 +116,7 @@ const headers = [
   { title: "Points", key: "points", align: "center " },
   { title: "Phone", key: "phone", align: "center" },
   { title: "Email", key: "email", align: "center" },
+  { title: "Status", key: "retired", align: "center" },
   { title: "Action", key: "select", align: "center" },
 ];
 
@@ -666,13 +673,21 @@ const get_echart_data = async () => {
       <v-card-title class="font-weight-bold">
         <span> Players </span>
         <v-spacer></v-spacer>
+
         <v-col cols="12" lg="8" md="6" class="font-weight-lighter text-right">
-          <a-range-picker
-            v-model:value="value"
-            :presets="rangePresets"
-            @change="onRangeChange"
-            :size="size"
-          />
+          <a-space>
+            <a-switch
+              v-model:checked="onlyActive"
+              checked-children="Active"
+              un-checked-children="ALL"
+            />
+            <a-range-picker
+              v-model:value="value"
+              :presets="rangePresets"
+              @change="onRangeChange"
+              :size="size"
+            />
+          </a-space>
         </v-col>
         <div class="w-25">
           <v-text-field
@@ -707,6 +722,24 @@ const get_echart_data = async () => {
               width="50"
               round="sm"
             ></v-img>
+          </template>
+          <template v-slot:item.retired="{ item }">
+            <v-chip
+              v-if="item.raw.retired"
+              class="font-weight-bold"
+              color="red"
+              label
+              size="small"
+              >Retired</v-chip
+            >
+            <v-chip
+              v-else
+              class="font-weight-bold"
+              color="green"
+              label
+              size="small"
+              >Active</v-chip
+            >
           </template>
           <!-- <template v-slot:item.type="{ item }">
             <v-chip class="font-weight-bold" color="primary">{{
@@ -765,7 +798,9 @@ const get_echart_data = async () => {
                   <h3>
                     {{ selectedUsersInfos[0].name }}
                   </h3>
-                  <h6 class="text-grey">rating: {{ selectedUsersInfos[0].rating }}</h6>
+                  <h6 class="text-grey">
+                    rating: {{ selectedUsersInfos[0].rating }}
+                  </h6>
                 </div>
                 <v-divider></v-divider>
                 <v-col></v-col>
@@ -776,7 +811,9 @@ const get_echart_data = async () => {
                   <h3>
                     {{ selectedUsersInfos[1].name }}
                   </h3>
-                  <h6 class="text-grey">rating: {{ selectedUsersInfos[1].rating }}</h6>
+                  <h6 class="text-grey">
+                    rating: {{ selectedUsersInfos[1].rating }}
+                  </h6>
                 </div>
                 <v-divider></v-divider>
                 <v-col></v-col>
@@ -787,7 +824,9 @@ const get_echart_data = async () => {
                   <h3>
                     {{ selectedUsersInfos[2].name }}
                   </h3>
-                  <h6 class="text-grey">rating: {{ selectedUsersInfos[2].rating }}</h6>
+                  <h6 class="text-grey">
+                    rating: {{ selectedUsersInfos[2].rating }}
+                  </h6>
                 </div>
               </div>
             </v-card>
@@ -795,9 +834,7 @@ const get_echart_data = async () => {
           <v-col cols="12" md="3">
             <v-card height="900px">
               <v-col v-if="loading_teamRating">
-                <h1
-                  class="text-blue-grey-lighten-3 text-center"
-                >
+                <h1 class="text-blue-grey-lighten-3 text-center">
                   Team Rating:
                 </h1>
                 <h1
@@ -808,22 +845,22 @@ const get_echart_data = async () => {
                 <h1
                   class="text-h4 text-md-h7 text-dark-lighten-1 font-weight-bold text-center"
                 >
-                  WF: {{ (wf*100).toFixed(2) }}%
+                  WF: {{ (wf * 100).toFixed(2) }}%
                 </h1>
                 <h1
                   class="text-h4 text-md-h7 text-amber-lighten-2 font-weight-bold text-center"
                 >
-                  Gold: {{ (gold*100).toFixed(2) }}%
+                  Gold: {{ (gold * 100).toFixed(2) }}%
                 </h1>
                 <h1
                   class="text-h4 text-md-h7 text-blue-grey-lighten-3 font-weight-bold text-center"
                 >
-                  Silver: {{ (silver*100).toFixed(2) }}%
+                  Silver: {{ (silver * 100).toFixed(2) }}%
                 </h1>
                 <h1
                   class="text-h4 text-md-h7 text-brown-lighten-1 font-weight-bold text-center"
                 >
-                  Bronze: {{ (bronze*100).toFixed(2) }}%
+                  Bronze: {{ (bronze * 100).toFixed(2) }}%
                 </h1>
                 <v-col v-if="wf > 0.5">
                   <AnimationWF :size="320" />

@@ -9,12 +9,13 @@ import CopyLabel from "@/components/common/CopyLabel.vue";
 import dayjs, { Dayjs } from "dayjs";
 import { message } from "ant-design-vue";
 import { LazyResult } from "postcss";
+import { CheckOutlined, CloseOutlined } from "@ant-design/icons-vue";
 import { ref } from "vue";
 type RangeValue = [Dayjs, Dayjs];
 
 const loading = ref(true);
 const totalRows = ref(0);
-
+const onlyActive = ref(true);
 const queryOptions = reactive({
   name__contains: "",
   page: 1,
@@ -40,6 +41,7 @@ const headers = [
   { title: "Points", key: "points", sortable: true },
   { title: "Phone", key: "phone" },
   { title: "Email", key: "email" },
+  { title: "Status", key: "retired", sortable: true },
   { title: "Actions", key: "actions" },
 ];
 
@@ -81,8 +83,8 @@ const getUsers = async () => {
   const params = queryOptions;
   const usersResponse = await getUserList(params);
   usersResponse.data.results = usersResponse.data.results.filter(
-    (user: { username: any }) => {
-      return user.username !== "admin";
+    (user: { username: any; retired: any }) => {
+      return user.username !== "admin" && (!onlyActive.value || !user.retired);
     }
   );
   allusers.value = usersResponse.data.results.map(
@@ -101,6 +103,7 @@ const getUsers = async () => {
       phone: any;
       email: any;
       rating: any;
+      retired: any;
     }) => {
       return {
         avatar: user.avatar,
@@ -112,6 +115,7 @@ const getUsers = async () => {
         points: pointsList.value[user.codeforces_id],
         rating: user.rating,
         phone: user.phone,
+        retired: user.retired,
       };
     }
   );
@@ -190,7 +194,7 @@ const saveRules = async () => {
     <v-card>
       <v-card-text>
         <v-row>
-          <v-col cols="12" lg="4" md="6">
+          <v-col cols="12" lg="3" md="5">
             <v-text-field
               density="compact"
               v-model="queryOptions.name__contains"
@@ -200,12 +204,17 @@ const saveRules = async () => {
               color="primary"
             ></v-text-field>
           </v-col>
-          <v-col cols="12" lg="8" md="6" class="text-right">
+          <v-col cols="12" lg="9" md="7" class="text-right">
             <a-space>
+              <a-switch
+                v-model:checked="onlyActive"
+                checked-children="Active"
+                un-checked-children="ALL"
+                @click="getUsers"
+              />
               <a-button type="default" :size="size" @click="openRulesDialog">
                 Set Rules
               </a-button>
-
               <!-- need RangePicker -->
               <a-range-picker
                 v-model:value="value"
@@ -261,6 +270,26 @@ const saveRules = async () => {
               </td>
               <td class="font-weight-bold text-body-2">
                 <CopyLabel :text="item.value.email" />
+              </td>
+              <td>
+                <div v-if="item.value.retired">
+                  <v-chip
+                    class="font-weight-bold align-center justify-center"
+                    color="red"
+                    size="small"
+                    label
+                    >Retired</v-chip
+                  >
+                </div>
+                <div v-else>
+                  <v-chip
+                    class="font-weight-bold"
+                    color="green"
+                    size="small"
+                    label
+                    >Active</v-chip
+                  >
+                </div>
               </td>
               <td>
                 <div class="d-flex align-center">

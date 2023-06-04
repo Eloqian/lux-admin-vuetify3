@@ -21,6 +21,7 @@ import CopyLabel from "@/components/common/CopyLabel.vue";
 import { ref } from "vue";
 import { useSnackbarStore } from "@/stores/snackbarStore";
 import AnimationWelcome from "@/components/animations/AnimationWelcome.vue";
+import AnimationLoadingChart from "~/src/components/animations/AnimationLoadingChart.vue";
 import { userInfo } from "os";
 import Snackbar from "~/src/components/common/Snackbar.vue";
 
@@ -28,7 +29,6 @@ const authStore = useAuthStore();
 const is_admin = ref(authStore.perms[0] === "admin");
 // console.log(is_admin.value);
 const list = ref([]);
-const loading = ref(false);
 const batch_codeforces_id = ref("");
 const batch_codeforces_id_list = ref([]);
 const batch_codeforces_id_list_error = ref([]);
@@ -40,6 +40,7 @@ const batch_real_name_list_success = ref([]);
 
 let batch_loading = ref(false);
 let batch_loading_size = ref(0);
+const loading_save = ref(false);
 
 const freshtable = async () => {
   const usersResponse = await getUserList({});
@@ -57,7 +58,6 @@ const freshtable = async () => {
 onMounted(async () => {
   if (!is_admin.value) return;
   freshtable();
-  loading.value = true;
 });
 const dialog = ref(false);
 const search = ref("");
@@ -100,7 +100,11 @@ const CodeforcesRules = [(v) => !!v || "Codeforces ID is required"];
 //Methods
 const filteredList = computed(() => {
   return list.value.filter((user: any) => {
-    return user.username.toLowerCase().includes(search.value.toLowerCase());
+    return (
+      user.username.toLowerCase().includes(search.value.toLowerCase()) ||
+      user.name.toLowerCase().includes(search.value.toLowerCase()) ||
+      user.codeforces_id.toLowerCase().includes(search.value.toLowerCase())
+    );
   });
 });
 
@@ -131,6 +135,7 @@ function close() {
 
 async function save() {
   // loading.value = false;
+  loading_save.value = true;
   let usersResponse = await getUserList({});
   let users = Object.keys(usersResponse.data.results).map(function (key) {
     return usersResponse.data.results[key].codeforces_id;
@@ -163,7 +168,12 @@ async function save() {
   // } else {
   //   list.value.push(editedItem.value);
   // }
-  close();
+
+  const snackbarStore = useSnackbarStore();
+  setTimeout(() => {
+    snackbarStore.showSuccessMessage("User Saved");
+    loading_save.value = false;
+  }, 1500);
 }
 
 //Computed Property
@@ -215,25 +225,31 @@ async function batch_create() {
       batch_real_name_list_error.value.push(batch_real_name_list.value[i]);
     }
     batch_loading_size.value =
-      (i / batch_codeforces_id_list.value.length) * 100;
+      ((i + 1) / batch_codeforces_id_list.value.length) * 100;
     batch_loading_size.value = Math.round(batch_loading_size.value);
   }
 
   if (batch_codeforces_id_list_error.value.length > 0) {
     const snackbarStore = useSnackbarStore();
     snackbarStore.showErrorMessage(
-      "Some users are not created. Please check the list below."
+      "Some User Failed to Create, Please Check the Codeforces ID and Real Name Below."
     );
     batch_codeforces_id.value = batch_codeforces_id_list_error.value.join("\n");
     batch_real_name.value = batch_real_name_list_error.value.join("\n");
     batch_loading.value = false;
+    batch_loading_size.value = 0;
   } else {
+    const snackbarStore = useSnackbarStore();
+    snackbarStore.showSuccessMessage("Batch Create User Success");
     setTimeout(() => {
+      batch_codeforces_id.value = "";
+      batch_real_name.value = "";
       batch_loading.value = false;
-      close();
-    }, 2000);
+      freshtable();
+      batch_loading_size.value = 0;
+    }, 1500);
   }
-  freshtable();
+
 }
 </script>
 
@@ -273,88 +289,93 @@ async function batch_create() {
                       v-model="refForm"
                       lazy-validation
                     >
-                      <v-row>
-                        <v-col cols="12" sm="6">
-                          <v-text-field
-                            variant="outlined"
-                            color="primary"
-                            density="compact"
-                            :rules="CodeforcesRules"
-                            v-model="editedItem.codeforces_id"
-                            label="Codeforces ID"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6">
-                          <v-text-field
-                            variant="outlined"
-                            color="primary"
-                            density="compact"
-                            :rules="nameRules"
-                            :counter="10"
-                            required
-                            v-model="editedItem.name"
-                            label="Real Name"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6">
-                          <v-select
-                            variant="outlined"
-                            color="primary"
-                            density="compact"
-                            :items="genderbg"
-                            v-model="editedItem.gender"
-                            label="Gender"
-                          ></v-select>
-                        </v-col>
-                        <v-col cols="12" sm="6">
-                          <v-select
-                            variant="outlined"
-                            color="primary"
-                            density="compact"
-                            :items="retiredbg"
-                            v-model="editedItem.retired"
-                            label="Status"
-                          ></v-select>
-                        </v-col>
-                        <v-col cols="12" sm="6">
-                          <v-text-field
-                            variant="outlined"
-                            color="primary"
-                            density="compact"
-                            v-model="editedItem.email"
-                            label="User email"
-                            type="email"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6">
-                          <v-text-field
-                            variant="outlined"
-                            color="primary"
-                            density="compact"
-                            v-model="editedItem.phone"
-                            label="Phone"
-                            type="phone"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6">
-                          <v-text-field
-                            variant="outlined"
-                            color="primary"
-                            density="compact"
-                            v-model="editedItem.id_number"
-                            label="ID Number"
-                          ></v-text-field>
-                        </v-col>
-                        <v-col cols="12" sm="6">
-                          <v-text-field
-                            variant="outlined"
-                            color="primary"
-                            density="compact"
-                            v-model="editedItem.student_number"
-                            label="Student Number"
-                          ></v-text-field>
-                        </v-col>
-                      </v-row>
+                      <div v-if="loading_save">
+                        <AnimationLoadingChart :size="330" />
+                      </div>
+                      <div v-else>
+                        <v-row>
+                          <v-col cols="12" sm="6">
+                            <v-text-field
+                              variant="outlined"
+                              color="primary"
+                              density="compact"
+                              :rules="CodeforcesRules"
+                              v-model="editedItem.codeforces_id"
+                              label="Codeforces ID"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6">
+                            <v-text-field
+                              variant="outlined"
+                              color="primary"
+                              density="compact"
+                              :rules="nameRules"
+                              :counter="10"
+                              required
+                              v-model="editedItem.name"
+                              label="Real Name"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6">
+                            <v-select
+                              variant="outlined"
+                              color="primary"
+                              density="compact"
+                              :items="genderbg"
+                              v-model="editedItem.gender"
+                              label="Gender"
+                            ></v-select>
+                          </v-col>
+                          <v-col cols="12" sm="6">
+                            <v-select
+                              variant="outlined"
+                              color="primary"
+                              density="compact"
+                              :items="retiredbg"
+                              v-model="editedItem.retired"
+                              label="Status"
+                            ></v-select>
+                          </v-col>
+                          <v-col cols="12" sm="6">
+                            <v-text-field
+                              variant="outlined"
+                              color="primary"
+                              density="compact"
+                              v-model="editedItem.email"
+                              label="User email"
+                              type="email"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6">
+                            <v-text-field
+                              variant="outlined"
+                              color="primary"
+                              density="compact"
+                              v-model="editedItem.phone"
+                              label="Phone"
+                              type="phone"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6">
+                            <v-text-field
+                              variant="outlined"
+                              color="primary"
+                              density="compact"
+                              v-model="editedItem.id_number"
+                              label="ID Number"
+                            ></v-text-field>
+                          </v-col>
+                          <v-col cols="12" sm="6">
+                            <v-text-field
+                              variant="outlined"
+                              color="primary"
+                              density="compact"
+                              v-model="editedItem.student_number"
+                              label="Student Number"
+                            ></v-text-field>
+                          </v-col>
+                        </v-row>
+                      </div>
                     </v-form>
                   </v-card-text>
                   <!-- <v-divider></v-divider> -->
@@ -427,7 +448,7 @@ async function batch_create() {
       </v-card>
 
       <v-card class="mt-2">
-        <v-table :loading="!loading" class="mt-5" v-if="loading">
+        <v-table class="mt-5" height="910px">
           <thead>
             <tr>
               <th class="text-subtitle-1 font-weight-semibold">
@@ -444,8 +465,12 @@ async function batch_create() {
               <th class="text-subtitle-1 font-weight-semibold">Actions</th>
             </tr>
           </thead>
-          <tbody class="text-body-1">
-            <tr v-for="item in filteredList">
+          <transition-group
+            name="fade"
+            tag="tbody"
+            class="text-body-1"
+          >
+            <tr v-for="item in filteredList" :key="item.codeforces_id">
               <td class="font-weight-bold">
                 <CopyLabel :text="item.codeforces_id" />
               </td>
@@ -537,7 +562,7 @@ async function batch_create() {
                 </div>
               </td>
             </tr>
-          </tbody>
+          </transition-group>
         </v-table>
       </v-card>
     </v-container>
@@ -626,4 +651,32 @@ async function batch_create() {
     font-weight: 500;
   }
 }
+
+/* 定义进入过渡的开始状态 */
+// .fade-enter-from {
+//   opacity: 0;
+//   transform: translateY(20px);
+// }
+
+// /* 定义进入过渡的结束状态 */
+// .fade-enter-to {
+//   opacity: 1;
+//   transform: translateY(0);
+// }
+
+// /* 定义离开过渡的开始状态 */
+// .fade-leave {
+//   opacity: 1;
+// }
+
+// /* 定义离开过渡的结束状态 */
+// .fade-leave-active {
+//   transition: opacity 1.5s;
+//   opacity: 0;
+// }
+
+// /* 定义移动过渡的样式 */
+// .fade-move {
+//   transition: transform 1.5s;
+// }
 </style>

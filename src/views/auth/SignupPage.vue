@@ -22,6 +22,9 @@ const showConfirmPassword = ref(false);
 
 // Submit
 const handleRegister = async () => {
+  const snackbarStore = useSnackbarStore();
+  snackbarStore.showErrorMessage("Register is not available at the moment");
+  return;
   const { valid } = await refLoginForm.value.validate();
   if (password.value !== confirmPassword.value) {
     const snackbarStore = useSnackbarStore();
@@ -215,9 +218,10 @@ const resetErrors = () => {
         <!-- <div v-if="errorProvider" class="error--text my-5">
           {{ errorProviderMessages }}
         </div>
-
+      -->
         <div class="my-5 text-center">
-          {{ $t("register.agree") }}
+          已暂停注册服务
+          <!-- {{ $t("register.agree") }}
           <br />
           <router-link class="text-primary" to="">{{
             $t("common.tos")
@@ -225,8 +229,8 @@ const resetErrors = () => {
           &
           <router-link class="text-primary" to="">{{
             $t("common.policy")
-          }}</router-link>
-        </div> -->
+          }}</router-link> -->
+        </div>
       </v-form></v-card-text
     >
   </v-card>

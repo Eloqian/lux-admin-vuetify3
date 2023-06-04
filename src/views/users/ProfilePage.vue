@@ -125,7 +125,7 @@ Basic with Icons
 
             <div class="text-center mt-5">
               <h3 class="text-h6 font-weight-bold">
-                {{ basic.codeforces_id }}
+                {{ basic.username }}
                 <v-chip size="small" class="font-weight-bold" color="blue">
                   {{ basic.role }}
                 </v-chip>
