@@ -94,7 +94,7 @@ const navs = [
           </v-col>
         </v-row>
         <hr class="my-3" />
-        <p class="text-center my-5">Yang J.K. © All Rights Reserved</p>
+        <p class="text-center my-5">Eloqian © All Rights Reserved</p>
       </v-sheet>
     </v-container>
   </v-sheet>

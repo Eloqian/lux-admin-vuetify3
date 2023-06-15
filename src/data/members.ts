@@ -127,7 +127,7 @@ export default [
   },
   {
     id: 7,
-    name: "Yang Lan",
+    name: "Eloqian",
     position: "HRD",
     avatar: "https://i.pravatar.cc/150?img=7",
     description: "人力资源领导者",
