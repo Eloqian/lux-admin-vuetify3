@@ -7,7 +7,7 @@ import { useSnackbarStore } from "@/stores/snackbarStore"
 
 NProgress.configure({ showSpinner: false })
 
-const whiteList = ['/auth/signin', '/auth/signup'] // no redirect whitelist
+const whiteList = ['/auth/signin', '/auth/signup', '/auth/forgot-password'] // no redirect whitelist
 
 router.beforeEach(async (to, _from, next) => {
   NProgress.start()

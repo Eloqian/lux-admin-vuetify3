@@ -279,7 +279,7 @@ Basic with Icons
         <!-- ---------------------------------------------- -->
         <!--   Authentication  -->
         <!-- ---------------------------------------------- -->
-        <v-card class="mb-5">
+        <!-- <v-card class="mb-5">
           <v-card-title class="bg-white py-4 font-weight-bold">
             Authentication</v-card-title
           >
@@ -325,7 +325,7 @@ Basic with Icons
               </v-col>
             </v-row>
           </v-card-text>
-        </v-card>
+        </v-card> -->
 
         <!-- ---------------------------------------------- -->
         <!--   Change Password  -->
@@ -417,7 +417,7 @@ Basic with Icons
         <!-- ---------------------------------------------- -->
         <!--   Notifications  -->
         <!-- ---------------------------------------------- -->
-        <v-card class="mb-5">
+        <!-- <v-card class="mb-5">
           <v-card-title class="bg-white py-4 font-weight-bold">
             Notifications</v-card-title
           >
@@ -454,7 +454,7 @@ Basic with Icons
               Unpdate Notifications</v-btn
             >
           </v-card-actions>
-        </v-card>
+        </v-card> -->
       </v-col>
     </v-row>
   </v-sheet>

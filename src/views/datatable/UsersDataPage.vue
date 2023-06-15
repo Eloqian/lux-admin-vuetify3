@@ -10,6 +10,7 @@ import dayjs, { Dayjs } from "dayjs";
 import { message } from "ant-design-vue";
 import { LazyResult } from "postcss";
 import { CheckOutlined, CloseOutlined } from "@ant-design/icons-vue";
+import { exportExcel } from "@/utils/exportExcel";
 import { ref } from "vue";
 type RangeValue = [Dayjs, Dayjs];
 
@@ -29,7 +30,7 @@ const getlastyear = () => {
 };
 
 const queryData = {
-  points_list: [2, 2, 3, 3, 4, 5, 5, 5, 5],
+  points_list: [],
   handles: ["Elo"],
   date_from: "",
   date_to: "",
@@ -64,14 +65,19 @@ const check = (a: any, b: any) => {
 };
 
 const getPoints = async () => {
-  if (check(queryData.handles, allusers.value)) {
+  if (
+    check(queryData.handles, allusers.value) &&
+    check(queryData.points_list, points_rule.value)
+  ) {
     return;
   } else {
+    queryData.points_list = points_rule.value;
     queryData.handles = allusers.value;
     queryData.date_from = date_from;
     queryData.date_to = date_to;
   }
   const pointResponse = await getUserPointList(queryData);
+  console.log(queryData);
   pointsList.value = pointResponse.data;
   usersList.value.forEach((user: any) => {
     user.points = pointsList.value[user.codeforces_id];
@@ -180,13 +186,51 @@ const setRulesDialog = ref(false);
 const openRulesDialog = () => {
   setRulesDialog.value = true;
 };
-const points_list = ref([2, 2, 3, 3, 4, 5, 5, 5, 5, 5, 10]);
+const points_rule = ref([2, 2, 3, 3, 4, 5, 5, 5, 5, 5, 10]);
 const saveRules = async () => {
-  if (check(points_list.value, queryData.points_list)) {
-    queryData.points_list = points_list.value;
-    await getPoints();
-  }
+  console.log("saveRules", points_rule.value, queryData.points_list);
+  queryData.points_list = points_rule.value;
+  queryData.handles = allusers.value;
+  queryData.date_from = date_from;
+  queryData.date_to = date_to;
+  const pointResponse = await getUserPointList(queryData);
+  // console.log(queryData);
+  pointsList.value = pointResponse.data;
+  usersList.value.forEach((user: any) => {
+    user.points = pointsList.value[user.codeforces_id];
+  });
   setRulesDialog.value = false;
+};
+const loading_export = ref<boolean>(false);
+const open = ref<boolean>(false);
+
+const showModal = () => {
+  open.value = true;
+};
+
+const handleOk = () => {
+  loading_export.value = true;
+  setTimeout(() => {
+    loading_export.value = false;
+    const data = usersList.value.map((user: any) => {
+      return {
+        username: user.codeforces_id,
+        name: user.name,
+        rating: user.rating,
+        points: user.points,
+        phone: user.phone,
+        email: user.email,
+        retired: user.retired,
+      };
+    });
+    const name = "rank_" + dayjs().format("YYYY-MM-DD") + ".xlsx";
+    exportExcel(data, name);
+    open.value = false;
+  }, 1000);
+};
+
+const handleCancel = () => {
+  open.value = false;
 };
 </script>
 <template>
@@ -222,6 +266,22 @@ const saveRules = async () => {
                 @change="onRangeChange"
                 :size="size"
               />
+              <a-button type="default" :size="size" @click="showModal"
+                >Export</a-button
+              >
+              <a-modal v-model:open="open" title="Export Excel" @ok="handleOk">
+                <template #footer>
+                  <a-button key="back" @click="handleCancel">Return</a-button>
+                  <a-button
+                    key="submit"
+                    type="primary"
+                    :loading="loading_export"
+                    @click="handleOk"
+                    >Exprot</a-button
+                  >
+                </template>
+                <p>Do you want to export the current list?</p>
+              </a-modal>
             </a-space>
           </v-col>
         </v-row>
@@ -350,11 +410,11 @@ const saveRules = async () => {
           <a-button type="default" :size="size"> A </a-button>
         </v-col>
         <v-col cols="12" md="8">
-          <a-slider v-model:value="points_list[0]" :min="0" :max="10" />
+          <a-slider v-model:value="points_rule[0]" :min="0" :max="10" />
         </v-col>
         <v-col cols="12" md="2">
           <a-input-number
-            v-model:value="points_list[0]"
+            v-model:value="points_rule[0]"
             :min="0"
             :max="10"
             style="margin-left: 16px"
@@ -366,11 +426,11 @@ const saveRules = async () => {
           <a-button type="default" :size="size"> B </a-button>
         </v-col>
         <v-col cols="12" md="8">
-          <a-slider v-model:value="points_list[1]" :min="0" :max="10" />
+          <a-slider v-model:value="points_rule[1]" :min="0" :max="10" />
         </v-col>
         <v-col cols="12" md="2">
           <a-input-number
-            v-model:value="points_list[1]"
+            v-model:value="points_rule[1]"
             :min="0"
             :max="10"
             style="margin-left: 16px"
@@ -383,11 +443,11 @@ const saveRules = async () => {
           <a-button type="default" :size="size"> C </a-button>
         </v-col>
         <v-col cols="12" md="8">
-          <a-slider v-model:value="points_list[2]" :min="0" :max="10" />
+          <a-slider v-model:value="points_rule[2]" :min="0" :max="10" />
         </v-col>
         <v-col cols="12" md="2">
           <a-input-number
-            v-model:value="points_list[2]"
+            v-model:value="points_rule[2]"
             :min="0"
             :max="10"
             style="margin-left: 16px"
@@ -400,11 +460,11 @@ const saveRules = async () => {
           <a-button type="default" :size="size"> D </a-button>
         </v-col>
         <v-col cols="12" md="8">
-          <a-slider v-model:value="points_list[3]" :min="0" :max="10" />
+          <a-slider v-model:value="points_rule[3]" :min="0" :max="10" />
         </v-col>
         <v-col cols="12" md="2">
           <a-input-number
-            v-model:value="points_list[3]"
+            v-model:value="points_rule[3]"
             :min="0"
             :max="10"
             style="margin-left: 16px"
@@ -416,11 +476,11 @@ const saveRules = async () => {
           <a-button type="default" :size="size"> E </a-button>
         </v-col>
         <v-col cols="12" md="8">
-          <a-slider v-model:value="points_list[4]" :min="0" :max="10" />
+          <a-slider v-model:value="points_rule[4]" :min="0" :max="10" />
         </v-col>
         <v-col cols="12" md="2">
           <a-input-number
-            v-model:value="points_list[4]"
+            v-model:value="points_rule[4]"
             :min="0"
             :max="10"
             style="margin-left: 16px"
@@ -432,11 +492,11 @@ const saveRules = async () => {
           <a-button type="default" :size="size"> F </a-button>
         </v-col>
         <v-col cols="12" md="8">
-          <a-slider v-model:value="points_list[5]" :min="0" :max="10" />
+          <a-slider v-model:value="points_rule[5]" :min="0" :max="10" />
         </v-col>
         <v-col cols="12" md="2">
           <a-input-number
-            v-model:value="points_list[5]"
+            v-model:value="points_rule[5]"
             :min="0"
             :max="10"
             style="margin-left: 16px"
@@ -448,11 +508,11 @@ const saveRules = async () => {
           <a-button type="default" :size="size"> G </a-button>
         </v-col>
         <v-col cols="12" md="8">
-          <a-slider v-model:value="points_list[6]" :min="0" :max="10" />
+          <a-slider v-model:value="points_rule[6]" :min="0" :max="10" />
         </v-col>
         <v-col cols="12" md="2">
           <a-input-number
-            v-model:value="points_list[6]"
+            v-model:value="points_rule[6]"
             :min="0"
             :max="10"
             style="margin-left: 16px"
@@ -464,11 +524,11 @@ const saveRules = async () => {
           <a-button type="default" :size="size"> H </a-button>
         </v-col>
         <v-col cols="12" md="8">
-          <a-slider v-model:value="points_list[7]" :min="0" :max="10" />
+          <a-slider v-model:value="points_rule[7]" :min="0" :max="10" />
         </v-col>
         <v-col cols="12" md="2">
           <a-input-number
-            v-model:value="points_list[7]"
+            v-model:value="points_rule[7]"
             :min="0"
             :max="10"
             style="margin-left: 16px"
@@ -480,11 +540,11 @@ const saveRules = async () => {
           <a-button type="default" :size="size"> >H </a-button>
         </v-col>
         <v-col cols="12" md="8">
-          <a-slider v-model:value="points_list[8]" :min="0" :max="10" />
+          <a-slider v-model:value="points_rule[8]" :min="0" :max="10" />
         </v-col>
         <v-col cols="12" md="2">
           <a-input-number
-            v-model:value="points_list[8]"
+            v-model:value="points_rule[8]"
             :min="0"
             :max="10"
             style="margin-left: 16px"
@@ -496,11 +556,11 @@ const saveRules = async () => {
           <a-button type="default" :size="size"> 参与训练赛积分 </a-button>
         </v-col>
         <v-col cols="12" md="9">
-          <a-slider v-model:value="points_list[8]" :min="0" :max="10" />
+          <a-slider v-model:value="points_rule[9]" :min="0" :max="10" />
         </v-col>
         <v-col cols="12" md="2">
           <a-input-number
-            v-model:value="points_list[9]"
+            v-model:value="points_rule[9]"
             :min="0"
             :max="10"
             style="margin-left: 16px"
@@ -512,13 +572,13 @@ const saveRules = async () => {
           <a-button type="default" :size="size"> 训练赛奖励积分池 </a-button>
         </v-col>
         <v-col cols="12" md="9">
-          <a-slider v-model:value="points_list[8]" :min="0" :max="10" />
+          <a-slider v-model:value="points_rule[10]" :min="0" :max="10" />
         </v-col>
         <v-col cols="12" md="2">
           <a-input-number
-            v-model:value="points_list[10]"
+            v-model:value="points_rule[10]"
             :min="0"
-            :max="10"
+            :max="20"
             style="margin-left: 16px"
           />
         </v-col>

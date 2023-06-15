@@ -56,7 +56,6 @@ const promptList = computed(() => {
           autofocus
           clearable
           hide-details
-          disabled
           @click:prepend-inner="apiKeyShow = !apiKeyShow"
         ></v-text-field>
 

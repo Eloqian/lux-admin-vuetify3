@@ -570,14 +570,14 @@ const get_echart_data = async () => {
   <v-container>
     <v-sheet
       class="d-flex align-center justify-center"
-      height="480"
+      height="397"
       v-if="selectedUsersInfos.length === 0"
     >
       <div class="text-center">
         <h3 class="text-h5 text-md-h3 font-weight-bold text-primary">
           Select TeamMembers
         </h3>
-        <AnimationMating :size="350" />
+        <AnimationMating :size="280" />
       </div>
     </v-sheet>
     <v-sheet v-else>
@@ -791,9 +791,10 @@ const get_echart_data = async () => {
           <v-col cols="12" md="2">
             <v-card height="900px">
               <div class="d-flex flex-column pa-10">
-                <v-avatar size="170" class="mx-auto elevation-12" color="white">
+                <v-avatar size="120" class="mx-auto elevation-12" color="white">
                   <v-img :src="selectedUsersInfos[0].title_photo"> </v-img>
                 </v-avatar>
+
                 <div class="text-center mt-5">
                   <h3>
                     {{ selectedUsersInfos[0].name }}
@@ -804,7 +805,7 @@ const get_echart_data = async () => {
                 </div>
                 <v-divider></v-divider>
                 <v-col></v-col>
-                <v-avatar size="170" class="mx-auto elevation-12" color="white">
+                <v-avatar size="120" class="mx-auto elevation-12" color="white">
                   <v-img :src="selectedUsersInfos[1].title_photo"> </v-img>
                 </v-avatar>
                 <div class="text-center mt-5">
@@ -817,7 +818,7 @@ const get_echart_data = async () => {
                 </div>
                 <v-divider></v-divider>
                 <v-col></v-col>
-                <v-avatar size="170" class="mx-auto elevation-12" color="white">
+                <v-avatar size="120" class="mx-auto elevation-12" color="white">
                   <v-img :src="selectedUsersInfos[2].title_photo"> </v-img>
                 </v-avatar>
                 <div class="text-center mt-5">
@@ -863,7 +864,7 @@ const get_echart_data = async () => {
                   Bronze: {{ (bronze * 100).toFixed(2) }}%
                 </h1>
                 <v-col v-if="wf > 0.5">
-                  <AnimationWF :size="320" />
+                  <AnimationWF :size="270" />
                   <h1
                     class="text-h4 text-md-h7 text-amber-lighten-2 font-weight-bold text-center"
                   >
@@ -871,7 +872,7 @@ const get_echart_data = async () => {
                   </h1>
                 </v-col>
                 <v-col v-else-if="gold > 0.5">
-                  <AnimationGold :size="300" />
+                  <AnimationGold :size="250" />
                   <h1
                     class="text-h4 text-md-h7 text-amber-lighten-2 font-weight-bold text-center"
                   >
@@ -879,7 +880,7 @@ const get_echart_data = async () => {
                   </h1>
                 </v-col>
                 <v-col v-else-if="silver > 0.5">
-                  <AnimationSilver :size="300" />
+                  <AnimationSilver :size="250" />
                   <h1
                     class="text-h4 text-md-h7 text-blue-grey-lighten-3 font-weight-bold text-center"
                   >
@@ -887,7 +888,7 @@ const get_echart_data = async () => {
                   </h1>
                 </v-col>
                 <v-col v-else-if="bronze > 0.5">
-                  <AnimationBronze :size="300" />
+                  <AnimationBronze :size="250" />
                   <h1
                     class="text-h4 text-md-h7 text-brown-lighten-1 font-weight-bold text-center"
                   >
@@ -895,7 +896,7 @@ const get_echart_data = async () => {
                   </h1>
                 </v-col>
                 <v-col v-else>
-                  <AnimationBronze :size="300" />
+                  <AnimationBronze :size="250" />
                   <h1
                     class="text-h4 text-md-h7 text-brown-lighten-1 font-weight-bold text-center"
                   >
